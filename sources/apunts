@@ -1,0 +1,34 @@
+LDAP Authentication
+
+
+"slapd.conf"
+
+-Disable authentication anonymous 
+disallow bind_anon
+
+-require authentication to access the directory
+require authc
+
+-authorization anonymous 
+allow bind_anon_cred
+
+
+
+----------------------------------------------
+Conexio ldap segura
+
+ldapsearch -x -H ldap://ldapserver -LLL -b 'dc=edt,dc=org' dn
+
+TLSCACertificateFile /etc/openldap/certs/ca.cert
+TLSCertificateFile /etc/openldap/certs/ldapserver.pem
+TLSCertificateKeyFile /etc/openldap/certs/ldap.key
+TLSCipherSuite HIGH:MEDIUM:+SSLv2
+TLSVerifyClient allow
+
+
+
+------------------------------------------------
+#begin startls 
+-if the client sends the server the command STARTTLS then the server will begin the TLS encryption process
+# same port to encrypted and cleartext
+-encrypted and cleartext traffic are sent over the same port, the method of simply blocking a port to prevent insecure data transmissions (by using a firewall for instance)
