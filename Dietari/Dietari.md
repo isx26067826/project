@@ -22,6 +22,8 @@ Proves de trafic xifrat de SSL en openldap correctament verificat. Investigacio 
 ###Dijous 03 de Maig 
 Investigació  de Cyrus SASL.
 
+###Divendres 04 de Maig
+
 ##Setmana 4
 
 
