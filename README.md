@@ -5,7 +5,7 @@
 OPENLDAP es una bona implementacio del protocol LDAP. Podrien parla de totes les utilitats i beneficis que te, pero no poden oblidar un mancança.
 La autenticació o sigui el enviament de totes les dades necesaries per demostrat al servidor qui som ser, viatgen per la xarxa en text pla. Com poden veure en la seguent imatge.
 
-![Alt text](https://github.com/isx26067826/project/tree/master/sources/wireshark-simle.png "Simple Authentication")
+![Alt text](https://github.com/isx26067826/project/blob/master/sources/wireshark-simple.jpg "Simple Authentication")
 
 - [Simple](https://github.com/isx26067826/project/tree/master/sources/simple.md)
 
