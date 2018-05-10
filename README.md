@@ -3,10 +3,10 @@
 ## GENERIC SECURITY SERVICE APPLICATION PROGRAM INTERFACE
 
 
->[Simple](https://github.com/isx26067826/project/tree/master/sources/simple.md)
+- [Simple](https://github.com/isx26067826/project/tree/master/sources/simple.md)
 
->[Digest/MD5](https://github.com/isx26067826/project/tree/master/sources/digest-md5.md)
+- [Digest/MD5](https://github.com/isx26067826/project/tree/master/sources/digest-md5.md)
 
->External
+- [External](https://github.com/isx26067826/project/tree/master/sources/external.md)
 
->GSSAPI
+- [GSSAPI](https://github.com/isx26067826/project/tree/master/sources/external.md)
