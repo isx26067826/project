@@ -1,7 +1,9 @@
 # EXTERNAL
 
-## Creació de certificat del client.
-### Client Certificate
+## Client 
+
+### Creació de certificat del client.
+
 
 Per poguer fer aquest certficat necesitaren que alguna algun *Certificate Authority* que avali. Sera el mateix que avala el del servidor de ldap que hen creat abans. 
 ```bash
