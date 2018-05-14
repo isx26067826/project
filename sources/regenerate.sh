@@ -1,0 +1,1 @@
+rm -rf /etc/openldap/slapd.d/* ;  slaptest -f slapd-edt.org.acl.conf -F /etc/openldap/slapd.d/ ; slaptest -f slapd-edt.org.acl.conf -F /etc/openldap/slapd.d/ -u; chown -R ldap.ldap /etc/openldap/slapd.d/

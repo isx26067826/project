@@ -96,10 +96,10 @@ TLSVerifyClient demand
 
 | TLSVerifyClient | Opcions       |
 | --------------- |:-------------:|
-| never           | right-aligned |
-| allow           | centered      |
-| try             | are neat      |
-| demand          | are neat      |
+| never           | Opcio per defecte (autenticació SIMPLE) . No fara "request certificate"                                                     |
+| allow           | "Request certificate". Si no es proporciona un certificat o si el certificat es incorrecte, la sessio continuara            |
+| try             | "Request certificate". Si no es proporciona un certificat la sessio continuara pero si el certificat es incorrecte es tanca |
+| demand          | "Request certificate". Si no es proporciona un certificat o si el certificat es incorrecte, la sessio tancara               |
 
 Per poguer fer el mapping dels certificats cap als usuaris del ldap hen de afegir un linia mes al slapd.conf 
 
