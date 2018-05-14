@@ -11,6 +11,9 @@ La autenticació o sigui el enviament de totes les dades necesaries per demostra
 
 - [Digest/MD5](https://github.com/isx26067826/project/tree/master/sources/digest-md5.md)
 
-- [External](https://github.com/isx26067826/project/tree/master/sources/external.md)
+- [External](https://github.com/isx26067826/project/tree/master/sources/external/external.md)
 
 - [GSSAPI](https://github.com/isx26067826/project/tree/master/sources/external.md)
+
+
+OPENLDAP permet que la comunicació sigui encriptada amb certificarts , aquest metode de seguretat es diu [StartTLS](https://github.com/isx26067826/project/tree/master/sources/starttls.md). Aquest metode es un metode de encriptació que poden implementar en diversos metodes de autenticació.

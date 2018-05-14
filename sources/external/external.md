@@ -1,5 +1,7 @@
 # EXTERNAL
 
+Aquest metode de autenticació utilitza un certificat avalta per una CA i correcte per poguer estableixa conexions segures i confiables amb el servidor ldap.
+
 ## Client 
 
 ### Creació de certificat del client.
@@ -58,7 +60,7 @@ Ara tenin que donar permisos a tots els certificats i claus. En aquest cas el us
 
 ```bash
 
-chown  nick.nick *
+chown  user.user *
 
 ```
 
@@ -70,8 +72,8 @@ Nota : Aquest fitxer determina el client ldap pero te preferencia davant el fitx
 ```bash
 
 SASL_MECH EXTERNAL
-TLS_CERT /home/nick/certs/martacert.pem
-TLS_KEY /home/nick/certs/martakey.pem
+TLS_CERT /path/certificate.pem
+TLS_KEY /path/certificatekey.pem
 TLS_CACERT /etc/openldap/certs/cacrt.pem
 
 ```
@@ -94,18 +96,73 @@ TLSVerifyClient demand
 
 ```
 
-| TLSVerifyClient | Opcions       |
-| --------------- |:-------------:|
+| TLSVerifyClient |                                                                    Opcions                                                  |
+| --------------- |:---------------------------------------------------------------------------------------------------------------------------:|
 | never           | Opcio per defecte (autenticació SIMPLE) . No fara "request certificate"                                                     |
 | allow           | "Request certificate". Si no es proporciona un certificat o si el certificat es incorrecte, la sessio continuara            |
 | try             | "Request certificate". Si no es proporciona un certificat la sessio continuara pero si el certificat es incorrecte es tanca |
 | demand          | "Request certificate". Si no es proporciona un certificat o si el certificat es incorrecte, la sessio tancara               |
 
+Nomes usuaris que donin un certificats correctes seran capaços de establir un connexio.
+
 Per poguer fer el mapping dels certificats cap als usuaris del ldap hen de afegir un linia mes al slapd.conf 
+En la part de la configuració de la DB
 
 ```bash
 
 authz-regexp "^email=([^,]+),cn=([^,]+).*,c=ES$" "uid=$2,ou=alumnes,dc=edt,dc=org"
 
+
+```
+
+Per poder comprovar si es correcte la configuració, crearen un certificat amb el usuari marta.
+Crearen un request amb el common name marta 
+
+```bash
+openssl req -new -newkey rsa:2048 -keyout martakey.pem -nodes -out martacsr.pem
+Generating a 2048 bit RSA private key
+....+++
+...............................+++
+writing new private key to 'martakey.pem'
+-----
+You are about to be asked to enter information that will be incorporated
+into your certificate request.
+What you are about to enter is what is called a Distinguished Name or a DN.
+There are quite a few fields but you can leave some blank
+For some fields there will be a default value,
+If you enter '.', the field will be left blank.
+-----
+Country Name (2 letter code) [XX]:ES
+State or Province Name (full name) []:Barcelona
+Locality Name (eg, city) [Default City]:Barcelona
+Organization Name (eg, company) [Default Company Ltd]:Escola del treball 
+Organizational Unit Name (eg, section) []:becarios
+Common Name (eg, your name or your server's hostname) []:marta
+Email Address []:marta@edt.org
+
+Please enter the following 'extra' attributes
+to be sent with your certificate request
+A challenge password []:
+An optional company name []:
+```
+
+Signen el request de marta amb el CA i avalen a marta. Amb aquest certificat podra fer una connexio sense proporcionar password al servidor ldap. 
+
+```bash
+ openssl x509 -CA /etc/openldap/certs/cacrt.pem -CAkey /etc/openldap/certs/cakey.pem -req -in martacsr.pem -CAcreateserial -out martacert.pem
+Signature ok
+subject=/C=ES/ST=Barcelona/L=Barcelona/O=Escola del treball/OU=becarios/CN=marta/emailAddress=marta@edt.org
+Getting CA Private Key
+
+```
+
+Comproven que es correcte fem una connexio amb ldapwhoami. Poden veure que fa el mapping correctament 
+
+```bash
+ldapwhoami  -ZZ
+SASL/EXTERNAL authentication started
+SASL username: email=marta@edt.org,cn=marta,ou=becarios,o=Escola del treball,l=Barcelona,st=Barcelona,c=ES
+SASL SSF: 0
+dn:uid=marta,ou=alumnes,dc=edt,dc=org
 
 ```
