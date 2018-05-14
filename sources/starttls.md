@@ -1,9 +1,13 @@
 # StartTLS
 
-Creacio de la CA. Aquest es un certificat es autosignat, esta avalat per si mateix i es el qui donara tot la confiabilitat als certificats del clients del servidor ldaps.
+En la configuració del la comunicació slapd 
+
+## Server 
+
+Creacio de la *Certificate Authority (CA)*. Aquest es un certificat es autosignat, esta avalat per si mateix i es el qui donara tot la confiabilitat als certificats que utilitzara slapd o els clients slapd que es volen fer una connexio segura.
 
 ```bash
- openssl req -new -x509 -nodes -out cacrt.pem -days 365 -keyout cakey.pem
+ openssl req -new -x509 -nodes -out /etc/openldap/cacrt.pem -days 365 -keyout /etc/openldap/cakey.pem
 Generating a 2048 bit RSA private key
 ...................................................................................................................+++
 ......+++
@@ -25,7 +29,7 @@ Common Name (eg, your name or your server's hostname) []:veritat
 Email Address []:veritat@edt.org
 ```
 
-Creacio del certificat del servidor ldap . Fem un Request. 
+Creacio del certificat del servidor ldap . Fem un Request i també creen la clau del servidor ldap . Aquest clau ha de estar sense password o sigui sense cap mena de protecció ( una practica poca habitual per tant la password ha de estar un lloc que consideren segur, l'opcio per no posar password es *-nodes *). 
 
 ```bash
 openssl req -new -newkey rsa:2048 -keyout /etc/openldap/certs/ldapserverkey.pem -nodes -out /etc/openldap/certs/ldapservercsr.pem
@@ -55,13 +59,13 @@ A challenge password []:
 An optional company name []:
 ```
 
-signen el certificat
+Signen el certificat el servidor slapd amb la CA que troben en la carpeta */etc/openldap/certs* lloc que openldap desa els certificats.
 
 ```bash
 openssl x509 -CA /etc/openldap/certs/cacrt.pem -CAkey /etc/openldap/certs/cakey.pem -req -in /etc/openldap/certs/ldapservercsr.pem -CAcreateserial -out /etc/openldap/certs/ldapservercert.pem
 ```
 
-# Server
+
 ```bash
 #SSL certificate file paths
 TLSCACertificateFile /etc/openldap/certs/cacrt.pem
@@ -71,7 +75,18 @@ TLSCipherSuite HIGH:MEDIUM:+SSLv2
 TLSVerifyClient never
 ```
 
-# Client
+
+| StartTLS               |                                                          Opcions                                                                       |
+| ---------------------- |:--------------------------------------------------------------------------------------------------------------------------------------:|
+| TLSCACertificateFile   | Especifica la CA que avalara a tots els certificats que tindra contacte el slapd                                                       |
+| TLSCertificateFile     | Especifica el certificat del servidor del slapd         																			      |
+| TLSCertificateKeyFile  | Especifica la clau del certificat del servidor slapd, aquest clau privada no pot estar protegida per contrasenya el slapd no el suporta|
+| TLSCipherSuite         | Especifica quin es el cifrat que utilitzaren.                                                                                          |
+| TLSVerifyClient        | Especifica les verificacions del certificats en una sessió TLS.                           											  |
+
+
+## Client
+Com ha client copiaren tots els certificats que estan relacionats amb la CA per que encripti la comunicació. Per aixo utilitzaren el commanda *docker cp* que en serveix per copiar diferents arxius dins d'un docker cap a un altre entorn.
 
 ```bash
 docker cp CONTAINER_NAME:/etc/openldap/certs/cacrt.pem /etc/openldap/certs
@@ -82,7 +97,7 @@ docker cp CONTAINER_NAME:/etc/openldap/certs/cakey.pem /etc/openldap/certs
 
 
 ```
-echo "172.17.0.2  ldapserver" >> /etc/hosts
+echo "IP-LDAPSERVER  ldapserver" >> /etc/hosts
 ```
 
 Modificació del fitxer de client del ldap

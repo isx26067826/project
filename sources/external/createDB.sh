@@ -1,3 +1,4 @@
+#! /bin/bash
 rm -rf /etc/openldap/slapd.d/* 
 rm -rf /var/lib/ldap/*
 cp DB_CONFIG /var/lib/ldap
