@@ -65,6 +65,7 @@ Signen el certificat el servidor slapd amb la CA que troben en la carpeta */etc/
 openssl x509 -CA /etc/openldap/certs/cacrt.pem -CAkey /etc/openldap/certs/cakey.pem -req -in /etc/openldap/certs/ldapservercsr.pem -CAcreateserial -out /etc/openldap/certs/ldapservercert.pem
 ```
 
+Modificació del fitxer de slapd.conf, en la part de les opcions globals. 
 
 ```bash
 #SSL certificate file paths
@@ -76,7 +77,7 @@ TLSVerifyClient never
 ```
 
 
-| StartTLS               |                                                          Opcions                                                                       |
+|       StartTLS         |                                                          Opcions                                                                       |
 | ---------------------- |:--------------------------------------------------------------------------------------------------------------------------------------:|
 | TLSCACertificateFile   | Especifica la CA que avalara a tots els certificats que tindra contacte el slapd                                                       |
 | TLSCertificateFile     | Especifica el certificat del servidor del slapd         																			      |
@@ -94,7 +95,7 @@ docker cp CONTAINER_NAME:/etc/openldap/certs/cacrt.srl /etc/openldap/certs
 docker cp CONTAINER_NAME:/etc/openldap/certs/cakey.pem /etc/openldap/certs
 ```
 
-
+Afegim la ip del servidor LDAP per que ens faci la traducció. Aquest pas el poden estalviar si tots el docker son en la mateix xarxa docker, en aquest cas tots el container fan la traducció sense cap mena de mofificació del fitxer /etc/hosts.
 
 ```
 echo "IP-LDAPSERVER  ldapserver" >> /etc/hosts
@@ -110,12 +111,9 @@ Modificació del fitxer de client del ldap
 # See ldap.conf(5) for details
 # This file should be world readable but not world writable.
 
-#BASE   dc=edt,dc=org
+BASE   dc=edt,dc=org
 URI     ldap://ldapserver ldaps://ldapserver
 
-#SIZELIMIT      12
-#TIMELIMIT      15
-#DEREF          never
 
 TLS_CACERTDIR   /etc/openldap/certs/
 TLS_CACERT      /etc/openldap/certs/cacrt.pem
@@ -124,3 +122,12 @@ TLS_CACERT      /etc/openldap/certs/cacrt.pem
 SASL_NOCANON    on
 
 ```
+
+|   Ldap Client  |                                                          Opcions                                                |
+| -------------- |:---------------------------------------------------------------------------------------------------------------:|
+| BASE           | Especifica quina sera la base DN de totes les operacions del client ldap                                        |
+| URI            | Especifica quines seran les URI(s) dels servidors de ldap                                                       |
+| TLS_CACERTDIR  | Especifica la ruta del directory que conte els certificats CA. Aquesta opcio ha de estar abans que *TLS_CACERT* |
+| TLS_CACERT     | Especifica quin sera el certificat (CA) que avalara tots els altres certificats                                 |
+
+

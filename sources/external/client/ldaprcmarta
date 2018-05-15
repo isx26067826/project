@@ -1,0 +1,5 @@
+SASL_MECH EXTERNAL
+TLS_CERT /home/marta/certs/martacert.pem
+TLS_KEY /home/marta/certs/martakey.pem
+TLS_CACERT /etc/openldap/certs/cacrt.pem
+
