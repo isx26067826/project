@@ -13,7 +13,7 @@ La autenticació o sigui el enviament de totes les dades necesaries per demostra
 
 - [External](https://github.com/isx26067826/project/tree/master/sources/external.md)
 
-- [GSSAPI](https://github.com/isx26067826/project/tree/master/sources/external.md)
+- [GSSAPI](https://github.com/isx26067826/project/tree/master/sources/gssapi.md)
 
 
 OPENLDAP per defecte no te la seva comunicació encriptada es per aixo que permet un metode de encriptació per fer-lo mes segur, aquest metode de seguretat es diu [StartTLS](https://github.com/isx26067826/project/tree/master/sources/starttls.md). Aquest metode ens dona encriptació mitjançant certificats. Abans OPENLDAP separa els ports amb la finalitat que un fos comunicació sense encriptar (port 389) i l'altre encriptar (port 636) tot aixo ja esta **deprecated** i STARTTLS permet fer tant conexions xifradas pel mateix port. 

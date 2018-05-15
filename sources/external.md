@@ -98,7 +98,7 @@ TLSVerifyClient demand
 
 | TLSVerifyClient |                                                                    Opcions                                                  |
 | --------------- |:---------------------------------------------------------------------------------------------------------------------------:|
-| never           | Opcio per defecte (autenticació SIMPLE) . No fara "request certificate"                                                     |
+| never           | Opcio per defecte (autenticació SIMPLE) . El server no fa "request certificate" al client                                   |
 | allow           | "Request certificate". Si no es proporciona un certificat o si el certificat es incorrecte, la sessio continuara            |
 | try             | "Request certificate". Si no es proporciona un certificat la sessio continuara pero si el certificat es incorrecte es tanca |
 | demand          | "Request certificate". Si no es proporciona un certificat o si el certificat es incorrecte, la sessio tancara               |
