@@ -46,6 +46,9 @@ access to *
 
 
 
+[isx26067826@localhost ldapserver]$ docker network create --subnet 172.50.0.0/24 --gateway 172.50.0.1 gssapi
+
+
 
 
 
