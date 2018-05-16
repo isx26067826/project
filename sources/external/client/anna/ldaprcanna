@@ -1,0 +1,5 @@
+SASL_MECH EXTERNAL
+TLS_CERT /home/anna/certs/annacert.pem
+TLS_KEY /home/anna/certs/annakey.pem
+TLS_CACERT /etc/openldap/certs/cacrt.pem
+

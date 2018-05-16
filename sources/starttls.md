@@ -4,7 +4,7 @@ En la configuració del la comunicació slapd
 
 ## Server 
 
-Creacio de la *Certificate Authority (CA)*. Aquest es un certificat es autosignat, esta avalat per si mateix i es el qui donara tot la confiabilitat als certificats que utilitzara slapd o els clients slapd que es volen fer una connexio segura.
+Creacio de la *Certificate Authority (CA)*. Aquest es un certificat es autosignat, esta avalat per si mateix i es el qui donara tot la confiabilitat als certificats que utilitzara slapd o els clients slapd que es volen fer una connexio segura. Aquest pas ha de realitzar un usuari que tingui permisos per guardar en la carpeta */etc/openldap/certs*, aixo es nomes per tindre tot ordenat.
 
 ```bash
  openssl req -new -x509 -nodes -out /etc/openldap/cacrt.pem -days 365 -keyout /etc/openldap/cakey.pem

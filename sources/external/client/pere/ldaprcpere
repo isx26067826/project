@@ -1,0 +1,5 @@
+SASL_MECH EXTERNAL
+TLS_CERT /home/pere/certs/perecert.pem
+TLS_KEY /home/pere/certs/perekey.pem
+TLS_CACERT /etc/openldap/certs/cacrt.pem
+

@@ -19,6 +19,8 @@ COPY * /opt/docker/
 RUN mv /opt/docker/ldap.conf /etc/openldap/ldap.conf
 RUN mv /opt/docker/cacrt.pem /etc/openldap/certs
 RUN mv /opt/docker/ldaprcmarta ~marta/.ldaprc
+RUN mv /opt/docker/ldaprcpere ~pere/.ldaprc
+RUN mv /opt/docker/ldaprcanna ~anna/.ldaprc
 RUN cp /opt/docker/marta* ~marta/certs
 RUN cp /opt/docker/pere* ~pere/certs
 RUN cp /opt/docker/anna* ~pere/certs
