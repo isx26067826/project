@@ -1,6 +1,9 @@
 #! /bin/bash
-
-#cut -f1 -d '/' usuaris
+#Nick Inga Reynaldo
+#Projecte LDAP GSSAPI
+#Script que apartir d'un fitxer amb usuaris creara els principals
+#en la base de dades de kerberos per que despres la exporten al 
+#servidor ldap. 
 
 while read -r line 
 do 

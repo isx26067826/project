@@ -9,7 +9,6 @@ Aquest metode de autenticació utilitza un certificat avalta per una CA i correc
 
 Per poguer fer aquest certficat necesitaren que alguna algun *Certificate Authority* que avali. Sera el mateix que avala el del servidor de ldap que hen creat abans. 
 ```bash
-mkdir certs ; cd certs 
 
 openssl req -new -newkey rsa:2048 -keyout martakey.pem -nodes -out martacsr.pem
 
@@ -65,8 +64,7 @@ chown  user.user *
 ```
 
 Ara al *home* del usuari hen de crear un fitxer ocul anomenat **.ldaprc** de configuracio molt similar aquest:
-Nota : Aquest fitxer determina el client ldap pero te preferencia davant el fitxer **/etc/openldap/ldap.conf** fitxer de configuració client per defecte.
-
+Nota : Aquest fitxer determina el client ldap pero te preferencia davant el fitxer **/etc/openldap/ldap.conf** fitxer de configuració client per defecte. Aquest fitxer determina la configuració no per client global sino per usuari del sistema.
 
 
 ```bash
@@ -78,6 +76,12 @@ TLS_CACERT /etc/openldap/certs/cacrt.pem
 
 ```
 
+| LDAP Client User |  					 			                               Opcions                                                  		   	   |
+| ---------------  |:-------------------------------------------------------------------------------------------------------------------------------------:|
+| SASL_MECH        | Especifica el mecanisme SASL que utilitza en la connexió                          													   |
+| TLS_CERT         | Especifica el certificat del client                                                                                                   |
+| TLS_KEY          | Especifica la clave privada del certificat del client actualment no pot estar protegit amb una password, ha de estar en un lloc segur |
+| TLS_CACERT       | Especifica quin sera el certificat (CA) que avalara tots els altres certificats                                					   |
 
 
 ## Server
@@ -166,3 +170,6 @@ SASL SSF: 0
 dn:uid=marta,ou=alumnes,dc=edt,dc=org
 
 ```
+
+
+
