@@ -1,4 +1,6 @@
 no se ha explicado el archivo .ldaprc las opciones
 explicaciones de los docker file sobre todo en del client external
 
-explicaciones de redes docker
+explicaciones de redes docker ( en el caso de external utilizaremos un red docker)
+
+en explicacion del modelo docker external

@@ -2,7 +2,7 @@
 #LDAP SERVER EXTERNAL
 
 
-FROM fedora:24
+FROM fedora
 MAINTAINER nick@edt "LDAP AUTH CERTIFICATES "
 RUN dnf -y install openldap  openldap-servers
 RUN mkdir /opt/docker
