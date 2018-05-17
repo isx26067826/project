@@ -85,3 +85,5 @@ tant de poder comprovar i continuar desenvolupant.
 - [SSF](https://github.com/isx26067826/project/tree/master/sources/ssf.md)
 
 
+
+Per obtindre les images amb els quals hem creat els diferents docker podeu accedir a el meu [Docker Hub](https://hub.docker.com/u/nickdunaway/)

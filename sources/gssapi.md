@@ -62,7 +62,9 @@ Establin en el fitxer de configuració del servidor kerberos
 
 ```
 
-***/var/kerberos/krb5kdc/kadm5.acl***
+
+El fitxer */var/kerberos/krb5kdc/kadm5.acl* és el encarregat d'establir les ACLs dels principals creats en la
+base de dades de Kerberos.
 
 ```bash
 
@@ -71,17 +73,21 @@ Establin en el fitxer de configuració del servidor kerberos
 
 ```
 
+Amb la comanda *kdb5_util* crearem la base de dades que emmagatzema les keys dels principals ( tant usuaris com ha màquines).
+Amb l'opció -P asignen la password de aquesta DB. 
+
 ```bash
 
 /usr/sbin/kdb5_util create -P masterkey -s
 
 ```
 
-```bash
 
-/usr/sbin/kadmin.local -q "addprinc -pw randkey ldap/ldapserver.edt.org"
 
-```
+Per poguer fer els login als diferents usuaris s'han de crear un llistat de principals en la base de dades de 
+Keberos. També en la llista dels usuaris, també inclouren al usuari administrador **admin/admin** per que ell
+sera el encarregat de fer la configuració de Kerberos remotament. Els diferents usuaris seran els següents:
+
 
 ```bash
 
@@ -113,6 +119,11 @@ roger/professors.becaris
 
 ```
 
+Per poguer crear els principals hen creat un script que automatitzi la creació dels principals. Utilizaren la ordre
+del kerberos server **kadmin.local** amb l'opcio *-q* que es per fer una consulta. En aquest cas la consulta es la
+creació dels principals com hen vist en el fitxer anterior anomenat *usuaris* i la contrasenya que sera la k 
+concatenada amb el nom del usuari. Exemple " usuari:user09/alumnes  password:kuser09".
+
 ```bash
 
 
@@ -135,6 +146,21 @@ done < usuaris
 
 
 ```
+
+Amb aquest ordre afegirem el principal que fe referencia al servidor ldapserver
+
+```bash
+
+/usr/sbin/kadmin.local -q "addprinc -pw randkey ldap/ldapserver.edt.org"
+
+```
+
+
+En les següents linies poden observar les lines d'execució del script que iniciara el servei kerberos
+detach. En aquest cas executarem dos dimonis.
+
+- krb5kdc ( dimoni encarregat de la distribució dels tiquets KDC)
+- kadmind ( dimoni del servei d'administració de kerberos, aquesta ordre conté l'opció -nofork que permetre un servei en segon pla)
 
 ```bash
 
@@ -225,7 +251,10 @@ includedir /etc/krb5.conf.d/
 
 ```
 
-En autenti
+Per que el servidor ldapserver pugui coneixer els principals i les claus exporta remotament el fitxer *krb5.keytab*,
+aquesta conexio remota al servidor kerberos es fa mitjançant un usuari amb privilegis en aquest cas *admin/admin*. 
+Després de fer la exportació ens hem de asegurar que el servei ldap pugui accedir a aquest servei. Ho poden 
+aconsenguir si li canvien el usuari i el grup per ldap.
 
 ```bash
 
@@ -235,6 +264,8 @@ En autenti
 
 ```
 
+Executen l'ordre per encendre el servei ldap en background
+
 ```bash
 
 /usr/sbin/slapd  -d0 -u ldap -h "ldap:/// ldaps:/// ldapi:///"
@@ -242,15 +273,107 @@ En autenti
 
 ```
 
+## Client 
+
+
+Amb el client també configurem la comunicació amb el servidor kerberos com també ho van fer amb ldapserver. Ens hem
+d'assegurar que el client tingui declara en el fitxer */etc/hosts* el servidor ldap i kerberos.
+
+```bash
+
+# To opt out of the system crypto-policies configuration of krb5, remove the
+# symlink at /etc/krb5.conf.d/crypto-policies which will not be recreated.
+includedir /etc/krb5.conf.d/
+
+[logging]
+ default = FILE:/var/log/krb5libs.log
+ kdc = FILE:/var/log/krb5kdc.log
+ admin_server = FILE:/var/log/kadmind.log
+
+[libdefaults]
+ dns_lookup_realm = false
+ ticket_lifetime = 24h
+ renew_lifetime = 7d
+ forwardable = true
+ rdns = false
+ default_realm = EDT.ORG
+# default_ccache_name = KEYRING:persistent:%{uid}
+
+[realms]
+ EDT.ORG = {
+  kdc = skerberos.edt.org
+  admin_server = skerberos.edt.org
+ }
+
+[domain_realm]
+ .edt.org = EDT.ORG
+ edt.org = EDT.ORG
+
+
+```
+
+En el fitxer de configuració del client ldap definin quin son els certificats per fer l'autenticació
+en aquest cas com el nom del domini del ldapserver ha canviat hen tingut que modificar el certificat del servidor.
+
+```bash
+
+
+#
+# LDAP Defaults
+#
+
+# See ldap.conf(5) for details
+# This file should be world readable but not world writable.
+
+BASE   dc=edt,dc=org
+URI    ldap://ldapserver.edt.org ldaps://ldapserver.edt.org
+
+
+TLS_CACERTDIR   /etc/openldap/certs/
+TLS_CACERT      /etc/openldap/certs/cacrt.pem
+
+# Turning this off breaks GSSAPI used with krb5 when rdns = false
+SASL_NOCANON    on
+
+
+```
 
 
 
 
+```bash
+
+kinit anna/professors.mati
+Password for anna/professors.mati@EDT.ORG: 
 
 
+```
 
 
+```bash
+
+klist
+Ticket cache: FILE:/tmp/krb5cc_0
+Default principal: anna/professors.mati@EDT.ORG
+
+Valid starting     Expires            Service principal
+05/17/18 23:01:51  05/18/18 23:01:51  krbtgt/EDT.ORG@EDT.ORG
 
 
+```
 
 
+```bash
+
+ldapwhoami -Y GSSAPI -ZZ
+SASL/GSSAPI authentication started
+SASL username: anna/professors.mati@EDT.ORG
+SASL SSF: 256
+SASL data security layer installed.
+dn:uid=anna,o=mati,ou=professors,dc=edt,dc=org
+
+
+```
+
+Si vols practicar i experimentar amb aquesta configuració del model d'autenticació gssapi et convido a poguer fer-lo
+tu mateix per sapiguer dona click [aquí](https://github.com/isx26067826/project/tree/master/sources/gssapi-execute.md)

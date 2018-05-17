@@ -13,6 +13,5 @@ RUN cp /opt/docker/ca* /etc/openldap/certs/
 RUN cp /opt/docker/ldapserver* /etc/openldap/certs/
 RUN /opt/docker/createDB.sh
 CMD ["/opt/docker/startup.sh"]
-#CMD ["/bin/bash"]
 EXPOSE 389 636
                                      

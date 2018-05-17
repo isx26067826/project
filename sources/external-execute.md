@@ -23,6 +23,11 @@ docker run --name client -h client --net external  --add-host=ldapserver:172.60.
 
 
 
+[root@localhost ~]# docker login
+Login with your Docker ID to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com to create one.
+Username: nickdunaway
+Password: 
+Login Succeeded
 
 
 [isx26067826@i16 server]$ docker build -t "external-server" .
