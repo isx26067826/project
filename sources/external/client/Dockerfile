@@ -23,6 +23,10 @@ RUN mv /opt/docker/ldaprcpere ~pere/.ldaprc
 RUN mv /opt/docker/ldaprcanna ~anna/.ldaprc
 RUN cp /opt/docker/marta* ~marta/certs
 RUN cp /opt/docker/pere* ~pere/certs
-RUN cp /opt/docker/anna* ~pere/certs
+RUN cp /opt/docker/anna* ~anna/certs
+RUN /usr/bin/chown -R pere.pere ~pere/certs
+RUN /usr/bin/chown -R marta.marta ~marta/certs
+RUN /usr/bin/chown -R anna.anna ~anna/certs
+
 CMD ["/bin/bash"]
 EXPOSE 389 636
