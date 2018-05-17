@@ -1,13 +1,31 @@
 # EXTERNAL
 
-Aquest metode de autenticació utilitza un certificat avalta per una CA i correcte per poguer estableixa conexions segures i confiables amb el servidor ldap.
+Podem utilitzar un metode per avalar qui son apartir de la CA que coneixe el servidor LDAP ?
+Clar que si aquest metode es conegut com ha external.
 
+Aquest mètode d'autenticació utilitza un certificat avalat per una CA i permet que un client és
+ connecti sense cap mena de transmissió de dades sensibles (password) per la xarxa. Com coneix el seu certificat sap qui és.
+
+En aquest mètode també incloure el StartTLS per protecció.
+
+Per poder implementar aquest model d'autenticació utilitzaren:
+
+- Un servidor ldapserver que tingui una vàlida CA
+
+- Un client amb tres diferents usuaris per comprovar correctament el seu funcionament.
+		
+		1. usuari marta amb un certificat avalat per CA del ldapserver
+		2. usuari pere amb un certificat avalat per CA del ldapserver però amb el certificat expirat (bad certificate)
+		3. usuari anna amb un certificat avalat per CA diferent de la que té ldapserver.
+		
 ## Client 
 
 ### Creació de certificat del client.
 
 
-Per poguer fer aquest certficat necesitaren que alguna algun *Certificate Authority* que avali. Sera el mateix que avala el del servidor de ldap que hen creat abans. 
+Per poguer fer aquest certficat necesitaren que alguna algun *Certificate Authority* que avali. Sera el mateix 
+que avala el del servidor de ldap que hen creat abans per utilitzar el StartTLS. Si vols tornar a veure com hen creat dona click [aquí](https://github.com/isx26067826/project/tree/master/sources/starttls.md).
+ 
 ```bash
 
 openssl req -new -newkey rsa:2048 -keyout martakey.pem -nodes -out martacsr.pem
@@ -170,6 +188,8 @@ SASL SSF: 0
 dn:uid=marta,ou=alumnes,dc=edt,dc=org
 
 ```
+
+
 
 
 

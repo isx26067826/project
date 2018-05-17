@@ -1,7 +1,8 @@
 # SIMPLE
 
-Com hen dit abans, la autenticació simple es molt insegura
 
+
+L'autenticació simple del servei LDAP inclou tant 
 ```bash
 	ldapwhoami -x -h ldapserver
 ```

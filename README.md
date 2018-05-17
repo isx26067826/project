@@ -8,17 +8,17 @@ Similar al que antigament es coneixia com a una guia telefònica. OPENLDAP es un
 
 ### Característiques del OPENLDAP
 
-Utilitza un base de dades centralitzada.
+- Utilitza un base de dades centralitzada.
 
-Utilitza una estructura jeràrquica mitjançant directoris, els quals poden contenir una gran varietat d'informació
+- Utilitza una estructura jeràrquica mitjançant directoris, els quals poden contenir una gran varietat d'informació
  junta que en altres bases de dades anirien separades (nom, cognom, correu, ip, password, entre altres) i es poden compartir per la xarxa.
 
-Optimitza les lectures intensiva de dades molt millor que una base de dades relacionals. En aquest cas si les 
+- Optimitza les lectures intensiva de dades molt millor que una base de dades relacionals. En aquest cas si les 
 dades estan en constant actualització, és molt millor utilitzar una base de dades relacional.
 
-LDAP utilitza el model client/servidor.
+- LDAP utilitza el model client/servidor.
 
-Una de les principals utilitats que té els directoris de LDAP és com servidor d'autenticació per diferents serveis
+- Una de les principals utilitats que té els directoris de LDAP és com servidor d'autenticació per diferents serveis
  ( com per exemple autenticació per poder entrar a un servidor web, un pc o altre servei).
 
 
@@ -26,9 +26,11 @@ Aquesta ultima característiques és en la qual es basa el meu projecte. L'auten
 implementacions i tècniques de criptografia alienes a LDAP.
 
 Per què?
+
 Perquè OPENLDAP per si mateix no cap mena de protecció de les seves dades quan viatgen per la xarxa. Això suposa un risc 
 per tota la integritat de la base de dades. Com poden veure en la següent imatge de l'entrada de l'usuari pere en arbre de directori,
  fins i tot per l'usuari root no li permet veure la informació sensible (userPassword, el sistema per defecte encripta la password SSHA )
+
 
 
 ```bash
@@ -63,15 +65,16 @@ En aquest moment on les lleis es posen cada vegada més exigents amb la privacit
  en la seguretat de les dades que administra. No ens podem confiar en què no passarà res si no cap mena de protecció.
   Mai haurien d'escatimar en la seguretat.
 
+![Alt text](https://github.com/isx26067826/project/blob/master/sources/hacker.jpg "LDAP PROBLEM AUTHENTICATION")
 
 
-
+En aquest projecte he desenvolupat els següents mètodes d'autenticacions. Cadascun ha presentat els seus desafiaments 
+però al final la seva implementació m'ha ajudat a progressar en coneixements. Cadascun d'aquest model té una imatge docker per 
+tant de poder comprovar i continuar desenvolupant. 
 
 
 
 - [Simple](https://github.com/isx26067826/project/tree/master/sources/simple.md)
-
-- [Digest/MD5](https://github.com/isx26067826/project/tree/master/sources/digest-md5.md)
 
 - [External](https://github.com/isx26067826/project/tree/master/sources/external.md)
 
