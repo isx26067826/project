@@ -1,6 +1,6 @@
 # EXTERNAL
 
-Podem utilitzar un metode per avalar qui son apartir de la CA que coneixe el servidor LDAP ?
+Podem utilitzar un mètode per avalar qui són apartir de la CA que el servidor LDAP coneixi?
 Clar que si aquest metode es conegut com ha external.
 
 Aquest mètode d'autenticació utilitza un certificat avalat per una CA i permet que un client és
@@ -189,7 +189,7 @@ dn:uid=marta,ou=alumnes,dc=edt,dc=org
 
 ```
 
-
+Si vols comprovar per tu mateix si aquest configuració pots montar el teu client i servidor 
 
 
 
