@@ -189,7 +189,8 @@ dn:uid=marta,ou=alumnes,dc=edt,dc=org
 
 ```
 
-Si vols comprovar per tu mateix si aquest configuració pots montar el teu client i servidor 
+Si vols comprovar per tu mateix si aquest configuració, pots montar el teu client i servidor amb docker, jo et dono totes les eines 
+[aquí](https://github.com/isx26067826/project/tree/master/sources/external-execute.md)
 
 
 

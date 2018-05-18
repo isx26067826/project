@@ -41,3 +41,19 @@ Login Succeeded
 [isx26067826@i16 client]$ docker push docker.io/nickdunaway/external-client
 
 
+[root@client docker]# su - marta
+[marta@client ~]$ ldapwhoami -ZZ
+SASL/EXTERNAL authentication started
+SASL username: email=marta@edt.org,cn=marta,ou=Barcelona,o=Barcelona,l=Barcelona,st=Barcelona,c=ES
+SASL SSF: 0
+dn:uid=marta,ou=alumnes,dc=edt,dc=org
+[marta@client ~]$ su - pere     
+Password: 
+[pere@client ~]$ ldapwhoami -ZZ
+ldap_start_tls: Connect error (-11)
+	additional info: TLS error -12269:SSL peer rejected your certificate as expired.
+[pere@client ~]$ su - anna
+Password: 
+[anna@client ~]$ ldapwhoami -ZZ
+ldap_start_tls: Connect error (-11)
+	additional info: TLS error -12195:Peer does not recognize and trust the CA that issued your certificate.

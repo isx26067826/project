@@ -1,0 +1,477 @@
+# Base de dades del alumnes i professors del clase de informatica
+# Escola del treball 
+# -----------------------------------------------
+
+dn: dc=edt,dc=org
+dc: edt
+description: Escola del treball de Barcelona
+objectClass: dcObject
+objectClass: organization
+o: edt.org
+
+dn: ou=alumnes,dc=edt,dc=org
+ou: usuaris
+description: Alumnes escola del treball
+objectclass: organizationalunit
+
+dn: ou=professors,dc=edt,dc=org
+ou: professors
+description: Professors de la escola del treball
+objectclass: organizationalunit
+
+dn: ou=hosts,dc=edt,dc=org                                                                                              
+ou: hosts
+description: Hosts del departament escola del treball
+objectclass: organizationalunit
+
+dn: o=tarda,ou=professors,dc=edt,dc=org 
+o: tarda
+description: Professors de tarda 
+objectclass: organization
+
+dn: o=mati,ou=professors,dc=edt,dc=org
+o: mati
+description: Professors de mati
+objectclass: organization
+
+dn: o=becaris,ou=professors,dc=edt,dc=org
+o: becaris
+description: Becaris de la escola del treball
+objectclass: organization
+
+dn: o=caps,ou=professors,dc=edt,dc=org
+o: caps
+description: Caps de la escola del treball
+objectclass: organization
+
+
+# ---------- Alumnes ----------------------------
+
+dn: uid=pau,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: Pau Pou
+cn: Pauet Pou
+sn: Pou
+homephone: 555-222-2220
+mail: alpau@edt.org
+description: Watch out for this guy
+ou: alumnes
+uid: pau
+uidNumber: 5000
+gidNumber: 100
+homeDirectory: /tmp/home/pau
+userPassword: {SSHA}txcIepdtt8g25OJm5EkpR9uI73FVSjh9
+
+dn: uid=pere,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: Pere Pou
+sn: Pou
+homephone: 555-222-2221
+mail: alpere@edt.org
+description: Watch out for this guy
+ou: alumnes
+uid: pere
+uidNumber: 5001
+gidNumber: 100
+homeDirectory: /tmp/home/pere
+userPassword: {SSHA}ML0WwodjFjxy7ELs/uGElWYSmjc/qc2j
+
+dn: uid=anna,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: Anna Pou
+cn: Anita Pou
+sn: Pou
+homephone: 555-222-2222
+mail: alanna@edt.org
+description: Watch out for this girl
+ou: alumnes
+uid: anna
+uidNumber: 5002
+gidNumber: 100
+homeDirectory: /tmp/home/anna
+userPassword: {SSHA}9OJS/GoGp6E3Ull7k3s4CKxOUKnzzmsn
+
+dn: uid=marta,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: Marta Mas
+sn: Mas
+homephone: 555-222-2223
+mail: almarta@edt.org
+description: Watch out for this girl
+ou: alumnes
+uid: marta
+uidNumber: 5003
+gidNumber: 100
+homeDirectory: /tmp/home/marta
+userPassword: {SSHA}zf+tvrvV3DNpgqadrEiphB5DY7waTbjw
+
+dn: uid=jordi,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: jordi mas
+sn: mas
+homephone: 555-222-2224
+mail: aljordi@edt.org
+description: Watch out for this girl
+ou: alumnes
+uid: jordi
+uidNumber: 5004
+gidNumber: 100
+homeDirectory: /tmp/home/jordi
+userPassword: {SSHA}EZUsW9ojU+yX66NTDoCT2eDod+4uhzzU
+
+dn: uid=admin,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: Administrador Sistema
+cn: System Admin
+sn: System
+homephone: 555-222-2225
+mail: alanna@edt.org
+description: Watch out for this girl
+ou: alumnes
+uid: admin
+uidNumber: 5005
+gidNumber: 100
+homeDirectory: /tmp/home/admin
+userPassword: {SSHA}F/DlGmNm5QqrOulP4vHgwowiwrUxdfR3
+
+dn: uid=user01,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: user01
+cn: alumne01 de 1asix de todos los santos
+sn: alumne01
+homephone: 555-222-0001
+mail: aluser01@edt.org
+description: alumne de 1asix
+ou: alumnes
+uid: user01
+uidNumber: 7001
+gidNumber: 100
+homeDirectory: /tmp/home/user01
+userPassword: {SSHA}KDiEwBWUJuF0PLxxqgOYnwo54M3JlYL9
+
+dn: uid=user02,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: user02
+cn: alumne02 Pou Prat
+sn: alumne02
+homephone: 555-222-0002
+mail: aluser02@edt.org
+description: alumne de alumnes
+ou: alumnes
+uid: user02
+uidNumber: 7002
+gidNumber: 100
+homeDirectory: /tmp/home/user02
+userPassword: {SSHA}hwjarQzvr3NUbLuYx/dBmkuZhbEaZtpi
+
+dn: uid=user03,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: user03
+cn: alumne03 Pou Prat
+sn: alumne03
+homephone: 555-222-0003
+mail: aluser03@edt.org
+description: alumne de alumnes
+ou: alumnes
+uid: user03
+uidNumber: 7003
+gidNumber: 100
+homeDirectory: /tmp/home/user03
+userPassword: {SSHA}7rG8qN9M8/sm6x4tVm57gp7idF0WwLsM
+
+dn: uid=user04,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: user04
+cn: alumne04 Pou Puig
+sn: alumne04
+homephone: 555-222-0004
+mail: aluser04@edt.org
+description: alumne de alumnes
+ou: alumnes
+uid: user04
+uidNumber: 7004
+gidNumber: 100
+homeDirectory: /tmp/home/user04
+userPassword: {SSHA}yhupjrX4eKGjai5Sl18893VHSPoJk6Su
+
+dn: uid=user05,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: user05
+cn: alumne05 Pou Prat
+sn: alumne05
+homephone: 555-222-0005
+mail: aluser05@edt.org
+description: alumne de alumnes
+ou: alumnes
+uid: user05
+uidNumber: 7005
+gidNumber: 100
+homeDirectory: /tmp/home/user05
+userPassword: {SSHA}wAEbzUpntJX51ipgk0U+POzi4jZiORw7
+
+dn: uid=user06,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: user06
+cn: alumne06 de alumnes de todos los santos
+sn: alumne06
+homephone: 555-222-0006
+mail: aluser06@edt.org
+description: alumne de alumnes
+ou: alumnes
+uid: user06
+uidNumber: 7006
+gidNumber: 100
+homeDirectory: /tmp/home/user06
+userPassword: {SSHA}8Lnpiu27xBOZVPAbC4XDqNHOHOT8dyew
+
+dn: uid=user07,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: user07
+cn: alumne07 de alumnes de todos los santos
+sn: alumne07
+homephone: 555-222-0007
+mail: aluser07@edt.org
+description: alumne de alumnes
+ou: alumnes
+uid: user07
+uidNumber: 7007
+gidNumber: 611
+homeDirectory: /tmp/home/user07
+userPassword: {SSHA}brD135ldOYyQ66RyZaWUTyxFCx79bflB
+
+dn: uid=user08,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: user08
+cn: alumne08 de alumnes de todos los santos
+sn: alumne08
+homephone: 555-222-0008
+mail: aluser08@edt.org
+description: alumne de alumnes
+ou: alumnes
+uid: user08
+uidNumber: 7008
+gidNumber: 611
+homeDirectory: /tmp/home/user08
+userPassword: {SSHA}x3Vccc95WrR1w7vYLw0esYZqitXbVSTX
+
+dn: uid=user09,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: user09
+cn: alumne09 de alumnes de todos los santos
+sn: alumne09
+homephone: 555-222-0009
+mail: user09@edt.org
+description: alumne de alumnes
+ou: alumnes
+uid: user09
+uidNumber: 7009
+gidNumber: 611
+homeDirectory: /tmp/home/user09
+userPassword: {SSHA}JwFGGXkLYFHe3B2p3wPHiMtlvz5ZbWVv
+
+dn: uid=user10,ou=alumnes,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: user10
+cn: alumne10 de alumnes de todos los santos
+sn: alumne10
+homephone: 555-222-0016
+mail: user10@edt.org
+description: alumne de alumnes
+ou: alumnes
+uid: user10
+uidNumber: 7010
+gidNumber: 611
+homeDirectory: /tmp/home/user10
+userPassword: {SSHA}jaBWZaMrYmm61aWNTyl4h3iKdSeNdd/x
+
+# ---------- Professors ----------------------------
+
+dn: uid=marta,o=tarda,ou=professors,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: marta
+sn: mas
+homephone: 777-222-0001
+mail: marta@tardaprofe.edt.org
+description: profesora tarda marta 
+ou: professors
+o: tarda
+uid: marta
+uidNumber: 11001
+gidNumber: 650
+homeDirectory: /tmp/home/tarda/marta
+userPassword: {SSHA}vA/arfnxt3CUHgEZ8ldpTRRvPzPjbR7y
+
+dn: uid=jordi,o=tarda,ou=professors,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: jordi
+sn: puig
+homephone: 777-222-0002
+mail: jordi@tardaprofe.edt.org
+description: professor tarda jordi
+ou: professors
+o: tarda
+uid: jordi
+uidNumber: 11002
+gidNumber: 650
+homeDirectory: /tmp/home/tarda/jordi
+userPassword: {SSHA}ihl40VZ5hV5V2cGtlETXHi4sVnkPpCNR
+
+dn: uid=anna,o=mati,ou=professors,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: anna
+sn: albiol
+homephone: 777-222-0003
+mail: anna@matiprofe.edt.org
+description: professora mati anna
+ou: professors
+o: mati
+uid: anna
+uidNumber: 11003
+gidNumber: 650
+homeDirectory: /tmp/home/mati/anna
+userPassword: {SSHA}sWtWMj1qoCIeDaL7xvkTt1A/LsEw5mA9
+
+dn: uid=marc,o=mati,ou=professors,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: marc
+sn: ferrer
+homephone: 778-222-0004
+mail: marc@matiprofe.edt.org
+description: professor mati marc
+ou: professors
+o: mati
+uid: nelson
+uidNumber: 11004
+gidNumber: 650
+homeDirectory: /tmp/home/mati/marc
+userPassword: {SSHA}Qu2V4MeFgvVaq6CUxfCrmePyrfuuCheD
+
+dn: uid=robert,o=tarda,ou=professors,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: robert
+sn: zamora
+homephone: 778-222-0005
+mail: robert@tardaprofe.edt.org
+description: professor tarda robert
+ou: professors
+o: tarda
+uid: robert
+uidNumber: 11005
+gidNumber: 650
+homeDirectory: /tmp/home/tarda/robert
+userPassword: {SSHA}rIu8VVw8ppmJ6iY3zjmwT4tZQwDUyJDT
+
+dn: uid=bernat,o=mati,ou=professors,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: bernat
+sn: ferrer
+homephone: 778-222-0006
+mail: bernat@matiprofe.edt.org
+description: professor mati bernat
+ou: professors
+o: mati
+uid: bernat
+uidNumber: 11006
+gidNumber: 650
+homeDirectory: /tmp/home/mati/bernat
+userPassword: {SSHA}nLiMTKTsTMxLxhj8ieVSVLVKPl9F1+vi
+
+dn: uid=carme,o=caps,ou=professors,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: carme
+sn: pujol
+homephone: 779-222-0007
+mail: carme@matiprofe.edt.org
+description: cap departament del informatica
+ou: professors
+o: caps
+uid: carme
+uidNumber: 11007
+gidNumber: 651
+homeDirectory: /tmp/home/caps/carme
+userPassword: {SSHA}tMrtTog2T3u7a9eRQv8p5PETyFEjbpG/
+
+dn: uid=roger,o=becaris,ou=professors,dc=edt,dc=org
+objectclass: posixAccount
+objectclass: inetOrgPerson
+cn: roger
+sn: peyas
+homephone: 779-222-0007
+mail: roger@becariprofe.edt.org
+description: becari del departament de informatica
+ou: professors
+o: becaris
+uid: roger
+uidNumber: 11032
+gidNumber: 651
+homeDirectory: /tmp/home/becaris/roger
+userPassword: {SSHA}p4S7d2VFW+36/VGklWGMxPUuMxpkaFxV
+
+# ------------- Hosts ----------------------------
+
+dn: cn=i18,ou=hosts,dc=edt,dc=org
+objectClass: ipHost
+objectClass: device
+cn: i18
+ipHostNumber: 192.168.1.12
+
+dn: cn=i01,ou=hosts,dc=edt,dc=org
+objectClass: ipHost
+objectClass: device
+cn: i18
+ipHostNumber: 192.168.1.5
+
+dn: cn=i15,ou=hosts,dc=edt,dc=org
+objectClass: ipHost
+objectClass: device
+cn: i15
+ipHostNumber: 192.168.1.50
+
+dn: cn=i09,ou=hosts,dc=edt,dc=org
+objectClass: ipHost
+objectClass: device
+cn: i09
+ipHostNumber: 192.168.1.51
+
+dn: cn=i20,ou=hosts,dc=edt,dc=org
+objectClass: ipHost
+objectClass: device
+cn: i20
+ipHostNumber: 192.168.1.60
+
+dn: cn=iserver,ou=hosts,dc=edt,dc=org
+objectClass: ipHost
+objectClass: device
+cn: iserver
+ipHostNumber: 192.168.1.10
+
+dn: cn=irouter,ou=hosts,dc=edt,dc=org
+objectClass: ipHost
+objectClass: device
+cn: irouter
+ipHostNumber: 192.168.1.1
+
+
