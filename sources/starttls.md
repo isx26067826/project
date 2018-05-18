@@ -135,3 +135,6 @@ SASL_NOCANON    on
 | TLS_CACERT     | Especifica quin sera el certificat (CA) que avalara tots els altres certificats                                 |
 
 
+Per poguer comprovar tot el que he explicat abans es correcte pot fer utilitzar les meves imatges en el meu repositori. Tots els pasos
+a seguir estan [aquí](https://github.com/isx26067826/project/tree/master/sources/starttls-execute.md)
+

@@ -9,7 +9,7 @@
 
 ```bash
 
-[isx26067826@i16 server]$ docker run --name ldapserver -h ldapserver --net starttls --add-host=client:172.30.0.3 --ip 172.30.0.2 -d server
+[isx26067826@i16 server]$ docker run --name ldapserver -h ldapserver --net starttls --add-host=client:172.30.0.3 --ip 172.30.0.2 -d nickdunaway/server-starttls
 
 
 ```
@@ -21,14 +21,10 @@
 
 
 ```bash
-[isx26067826@i16 server]$ docker run --name client -h client --net starttls --add-host=ldapserver:172.30.0.2 --ip 172.30.0.3 -it client
+[isx26067826@i16 server]$ docker run --name client -h client --net starttls --add-host=ldapserver:172.30.0.2 --ip 172.30.0.3 -it nickdunaway/client-starttls
 
 
 ```
-
-
-
-
 
 
 
