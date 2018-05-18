@@ -1,10 +1,10 @@
 # Execució del Server External
 
-En gairebé qualsevol ordinar que tingui instal·lat el servei docker poden executar aquest exemple. 
-
+Per poder executar aquesta prova el client ha de poguer resoldre el nom del servidor ldap per que en aquest cas incloure el StartTLS.
 Primer crearem un red docker per que el servidor i el docker es puguin comunicar sense moltes dificultats
 
 ```bash
+
 docker network create --subnet 172.60.0.0/24 --gateway 172.60.0.1 external
 
 ```

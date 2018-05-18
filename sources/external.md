@@ -129,18 +129,19 @@ TLS_CACERT /etc/openldap/certs/cacrt.pem
 
 ```
 
-| LDAP Client User  |  					 			                               Opcions                                                  		   	   |
+| LDAP Client User  |  					 			                               Opcions                                                  		   	    |
 | ----------------- |:-------------------------------------------------------------------------------------------------------------------------------------:|
-| SASL_MECH         | Especifica el mecanisme SASL que utilitza en la connexió                          													   |
+| SASL_MECH         | Especifica el mecanisme SASL que utilitza en la connexió                          													|
 | TLS_CERT          | Especifica el certificat del client                                                                                                   |
 | TLS_KEY           | Especifica la clave privada del certificat del client actualment no pot estar protegit amb una password, ha de estar en un lloc segur |
-| TLS_CACERT        | Especifica quin sera el certificat (CA) que avalara tots els altres certificats                                					   |
+| TLS_CACERT        | Especifica quin sera el certificat (CA) que avalara tots els altres certificats                                					    |
 
 
 
 
 
-Comproven que es correcte fem una connexio amb ldapwhoami. Poden veure que fa el mapping correctament 
+Comproven que es correcte fem una connexio amb ldapwhoami amb StartTLS (option -ZZ ) . Poden veure que el servidor ldap fa mapping correctament del certificat,
+al usuari ldap.
 
 ```bash
 ldapwhoami  -ZZ
