@@ -10,7 +10,7 @@ que executa el docker).
 
 ```bash
 
-[isx26067826@i16 server]$ docker network create --subnet 172.30.0.0/24 --gateway 172.30.0.1 starttls
+docker network create --subnet 172.30.0.0/24 --gateway 172.30.0.1 starttls
 
 ```
 
@@ -21,7 +21,7 @@ click [aqui](https://github.com/isx26067826/project/tree/master/sources/options.
 
 ```bash
 
-[isx26067826@i16 server]$ docker run --name ldapserver -h ldapserver --net starttls --add-host=client:172.30.0.3 --ip 172.30.0.2 -d nickdunaway/server-starttls
+docker run --name ldapserver -h ldapserver --net starttls --add-host=client:172.30.0.3 --ip 172.30.0.2 -d nickdunaway/server-starttls
 
 
 ```
@@ -30,7 +30,8 @@ Executen el client en mode interectiu. Per veure el Dockerfile click [aquí](htt
 
 
 ```bash
-[isx26067826@i16 server]$ docker run --name client -h client --net starttls --add-host=ldapserver:172.30.0.2 --ip 172.30.0.3 -it nickdunaway/client-starttls
+
+docker run --name client -h client --net starttls --add-host=ldapserver:172.30.0.2 --ip 172.30.0.3 -it nickdunaway/client-starttls
 
 
 ```
