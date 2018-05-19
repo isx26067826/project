@@ -4,7 +4,7 @@ Per poder executar aquesta prova el client ha de poguer resoldre el nom del serv
 correctament el nom del servidor hen creat un xarxa per que  en aquesta xarxa tots el hosts es coneixen i també en afegit al seu fitxer */etc/hosts* el servidor
 ldap amb l'opcio del docker *--add-host* ).
 
-Creació de la xarxa external dins del entorn de docker on el rang de la xarxa sera 172.60.0.6/24 i el gateway sera el 172.60.0.1 (que corresponde al localhost
+Creació de la xarxa external dins del entorn de docker on el rang de la xarxa sera 172.60.0.0/24 i el gateway sera el 172.60.0.1 (que corresponde al localhost
 que executa el docker).
 
 ```bash
@@ -32,7 +32,11 @@ docker run --name client -h client --net external  --add-host=ldapserver:172.60.
 
 Aquestes tres imatges son el resultat del Dockerfiles i tots els altres fitxer de configuració que teniu a la directori 
 [external](https://github.com/isx26067826/project/tree/master/sources/external) . Aquestes imatges les he pujat al Docker hub, si vols 
-sapiguer com s'he fet aquest push fes click [aquí](https://github.com/isx26067826/project/tree/master/sources/docker-push.md)
+sapiguer com s'he fet aquest push fes click [aquí](https://github.com/isx26067826/project/tree/master/sources/docker-push.md).
+
+## Comprovació dels dockers
+
+Fem el login als tres diferents usuaris (marta,anna i pere) i executen la comanda ldap client que identifica al usuari que estas executan.
 
 Cas 1. El usuari marta té un certificat avalat per la CA que coneix el servidor ldap. Per això el resultat es correcte.
 
