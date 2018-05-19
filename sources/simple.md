@@ -41,4 +41,4 @@ dn:uid=marta,o=tarda,ou=professors,dc=edt,dc=org
 
 ```
 
-
+Aquest metode no he creat cap estructura docker per comprovar per que es el metode per defecte conegut per tothom.

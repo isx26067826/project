@@ -1,7 +1,11 @@
 # Execució del Server External
 
-Per poder executar aquesta prova el client ha de poguer resoldre el nom del servidor ldap per que en aquest cas incloure el StartTLS.
-Primer crearem un red docker per que el servidor i el docker es puguin comunicar sense moltes dificultats
+Per poder executar aquesta prova el client ha de poguer resoldre el nom del servidor ldap per que en aquest cas incloure el StartTLS ( per que el client resolgui
+correctament el nom del servidor hen creat un xarxa per que  en aquesta xarxa tots el hosts es coneixen i també en afegit al seu fitxer */etc/hosts* el servidor
+ldap amb l'opcio del docker *--add-host* ).
+
+Creació de la xarxa external dins del entorn de docker on el rang de la xarxa sera 172.60.0.6/24 i el gateway sera el 172.60.0.1 (que corresponde al localhost
+que executa el docker).
 
 ```bash
 
@@ -9,6 +13,7 @@ docker network create --subnet 172.60.0.0/24 --gateway 172.60.0.1 external
 
 ```
 
+Executen el ldapserver en mode detach ( back-ground). Per veure com he aconseguit que el ldapserver estigui detach click [aqui](https://github.com/isx26067826/project/tree/master/sources/options#Detach).
 
 ```bash
 
@@ -16,6 +21,7 @@ docker run --name ldapserver -h ldapserver --net external --add-host=client:172.
 
 ```
 
+Executen el client en mode interectiu.
 
 ```bash
 

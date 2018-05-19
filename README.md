@@ -86,4 +86,4 @@ tant de poder comprovar i continuar desenvolupant.
 
 
 
-Per obtindre les images amb els quals hem creat els diferents docker podeu accedir a el meu [Docker Hub](https://hub.docker.com/u/nickdunaway/)
+Per obtindre les images amb els quals hem creat els diferents conatiners podeu accedir a el meu repositori [Docker Hub](https://hub.docker.com/u/nickdunaway/)
