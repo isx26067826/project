@@ -13,7 +13,7 @@ docker network create --subnet 172.60.0.0/24 --gateway 172.60.0.1 external
 
 ```
 
-Executen el ldapserver en mode detach ( back-ground). Per veure com he aconseguit que el ldapserver estigui detach click [aqui](https://github.com/isx26067826/project/tree/master/sources/options#Detach).
+Executen el ldapserver en mode detach ( back-ground). Per veure com he aconseguit que el ldapserver estigui detach click [aqui](https://github.com/isx26067826/project/tree/master/sources/options.md#Detach).
 
 ```bash
 
