@@ -13,7 +13,7 @@ docker network create --subnet 172.60.0.0/24 --gateway 172.60.0.1 external
 
 ```
 
-Executen el ldapserver en mode detach ( back-ground). Per veure com he aconseguit que el ldapserver estigui detach click [aqui](https://github.com/isx26067826/project/tree/master/sources/options.md#Detach).
+Executen el ldapserver en mode detach ( back-ground). Per veure com he aconseguit que el ldapserver estigui detach click [aqui](https://github.com/isx26067826/project/tree/master/sources/options.md).
 
 ```bash
 
@@ -31,8 +31,9 @@ docker run --name client -h client --net external  --add-host=ldapserver:172.60.
 
 Aquestes tres imatges son el resultat del Dockerfiles i tots els altres fitxer de configuració que teniu a la directori 
 [external](https://github.com/isx26067826/project/tree/master/sources/external) . Aquestes imatges les he pujat al Docker hub, si vols 
-sapiguer com s'he fet aquest push fes click [aquí](https://github.com/isx26067826/project/tree/master/sources/ssf.md)
+sapiguer com s'he fet aquest push fes click [aquí](https://github.com/isx26067826/project/tree/master/sources/docker-push.md)
 
+Cas 1. El usuari marta té un certificat avalat per la CA que coneix el servidor ldap. Per això el resultat es correcte.
 
 ```bash
 
@@ -47,6 +48,8 @@ dn:uid=marta,ou=alumnes,dc=edt,dc=org
 
 ```
 
+Cas 2. El usuari pere té un certificat avalat per la CA que coneix el servidor ldap. Pero està caducat el seu certificat si aquest certificat s'hauri utilitzat
+en altres dates seria correcte el resultat pero com no es així en aquest cas la resposta es ***your certificate as expired***
 
 ```bash
 
@@ -59,6 +62,8 @@ ldap_start_tls: Connect error (-11)
 
 ```
 
+Cas 3. El usuari anna té un certificat avalat per altre CA que el servidor ldap no coneix. Aquest cas es incorrecte per que el servidor no sap qui es per tant en
+aquest cas la resposta es ***does not recognize and trust the CA***
 
 ```bash
 
@@ -70,3 +75,6 @@ ldap_start_tls: Connect error (-11)
 	additional info: TLS error -12195:Peer does not recognize and trust the CA that issued your certificate.
 
 ```
+
+
+[Tornar al principi](https://github.com/isx26067826/project/blob/master/README.md)
