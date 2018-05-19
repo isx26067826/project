@@ -7,6 +7,7 @@ MAINTAINER nick@edt "LDAP AUTH CERTIFICATES "
 RUN dnf -y install krb5-workstation krb5-libs openldap-clients cyrus-sasl-gssapi cyrus-sasl-ldap
 RUN mkdir /opt/docker
 WORKDIR /opt/docker
+# Modificar i moure els fitxers de configuració que en exportat de les carpetas del sistema
 COPY * /opt/docker/
 RUN  mv /opt/docker/krb5.conf /etc/krb5.conf
 RUN cp /opt/docker/ca* /etc/openldap/certs/

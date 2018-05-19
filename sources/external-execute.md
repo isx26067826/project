@@ -13,7 +13,8 @@ docker network create --subnet 172.60.0.0/24 --gateway 172.60.0.1 external
 
 ```
 
-Executen el ldapserver en mode detach ( back-ground). Per veure com he aconseguit que el ldapserver estigui detach click [aqui](https://github.com/isx26067826/project/tree/master/sources/options.md).
+Executen el ldapserver en mode detach ( back-ground). Per veure com he aconseguit que el ldapserver estigui detach 
+click [aqui](https://github.com/isx26067826/project/tree/master/sources/options.md). Per veure el Dockerfile click [aquí](https://github.com/isx26067826/project/blob/master/sources/external/server/Dockerfile).
 
 ```bash
 
@@ -21,7 +22,7 @@ docker run --name ldapserver -h ldapserver --net external --add-host=client:172.
 
 ```
 
-Executen el client en mode interectiu.
+Executen el client en mode interectiu. Per veure el Dockerfile click [aquí](https://github.com/isx26067826/project/blob/master/sources/external/client/Dockerfile).
 
 ```bash
 
