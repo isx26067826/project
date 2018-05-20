@@ -314,6 +314,7 @@ includedir /etc/krb5.conf.d/
 
 En el fitxer de configuració del client ldap definin quin son els certificats per fer l'autenticació
 en aquest cas com el nom del domini del ldapserver ha canviat hen tingut que modificar el certificat del servidor.
+Aquest fitxer de configuració de LDAP Client en permetre fer StartTLS.
 
 ```bash
 
@@ -338,7 +339,8 @@ SASL_NOCANON    on
 
 ```
 
-
+Obtenin un ticket identifican que som anna al grup professors del matí en aquest cas ens demanara la password que hen guardat a la base de dades del
+servidor Kerberos.
 
 
 ```bash
@@ -349,6 +351,8 @@ Password for anna/professors.mati@EDT.ORG:
 
 ```
 
+Comproven correctament que son el usuari que hen demanat amb la comanda *klist*. Aqui també tenin dades de quan caducara aquest tiquet i on esta guardat
+tots aquest tiques es guardan en un fitxer en el */tmp/*  
 
 ```bash
 
@@ -362,6 +366,8 @@ Valid starting     Expires            Service principal
 
 ```
 
+Amb la comanda client de ldap *ldapwhoami* comproven correctament que el usuari que ens hen autenticat al servidor ldap a partir del tiqut es anna del grup
+professors del mati. En aquest cas l'opció *-Y* espeficiquen quin es el metode d'autenticació SASL que volen utilitzar GSSAPI es el escollit per aquest cas.
 
 ```bash
 

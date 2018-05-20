@@ -1,3 +1,10 @@
+# SSF
+
+Hi ha algun parametre per determinar el grau de protecció que accepta una base de dades? La reposta es el SSF ( Security Strength Factors ), el servidor
+ldap pot garantir la protecció i integritat de les dades tant propies com les que viatgen. Aquesta control també es pot aplicar tant al encriptació TLS com als
+diferents metodes d'autenticació SASL, i per suposat el mode Simple. 
+
+L'opció que utilitza el fitxer de configuració es *security* que determina les diferents regles que ha complir, algunes son aquestes:
 
 
 
