@@ -67,6 +67,8 @@ ldap_start_tls: Connect error (-11)
 
 ```
 
+Per crear un certificat caducat he utilitzat les següent [comandes](https://github.com/isx26067826/project/tree/master/sources/caducate.md).
+
 Cas 3. El usuari anna té un certificat avalat per altre CA que el servidor ldap no coneix. Aquest cas es incorrecte per que el servidor no sap qui es per tant en
 aquest cas la resposta es ***does not recognize and trust the CA***
 

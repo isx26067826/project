@@ -38,7 +38,7 @@ docker run --name client -h client --net starttls --add-host=ldapserver:172.30.0
 
 
 Aquestes dues imatges son el resultat del Dockerfiles i tots els altres fitxer de configuració que teniu a la directori 
-[external](https://github.com/isx26067826/project/tree/master/sources/STARTTLS) . Aquestes imatges les he pujat al Docker hub, si vols 
+[StartTLS](https://github.com/isx26067826/project/tree/master/sources/STARTTLS) . Aquestes imatges les he pujat al Docker hub, si vols 
 sapiguer com s'he fet aquest push fes click [aquí](https://github.com/isx26067826/project/tree/master/sources/docker-push.md).
 
 # Comprovació dels dockers 
@@ -48,6 +48,7 @@ si no pot fer la negociació seguir el model normal. Pero quan apliquen la segon
 
 
 ```bash
+
 [root@client docker]# ldapsearch -x -b 'dc=edt,dc=org' -LLL -s base -ZZ
 dn: dc=edt,dc=org
 dc: edt
@@ -55,8 +56,6 @@ description: Escola del treball de Barcelona
 objectClass: dcObject
 objectClass: organization
 o: edt.org
-
-
 
 
 ```

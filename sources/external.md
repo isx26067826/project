@@ -48,8 +48,12 @@ En la part de la configuració de la DB
 
 ```bash
 
-authz-regexp "^email=([^,]+),cn=([^,]+).*,c=ES$" "uid=$2,ou=alumnes,dc=edt,dc=org"
-
+authz-regexp "^email=([^,]+),cn=([^,]+),ou=alumnes.*,c=ES$" "uid=$2,ou=alumnes,dc=edt,dc=org"
+authz-regexp "^email=([^,]+),cn=manager.*,c=ES$" "cn=Manager,dc=edt,dc=org"
+authz-regexp "^email=([^,]+),cn=([^,]+),ou=professors,o=tarda.*,c=ES$" "uid=$2,o=tarda,ou=professors,dc=edt,dc=org"
+authz-regexp "^email=([^,]+),cn=([^,]+),ou=professors,o=mati.*,c=ES$" "uid=$2,o=mati,ou=professors,dc=edt,dc=org"
+authz-regexp "^email=([^,]+),cn=([^,]+),ou=professors,o=caps.*,c=ES$" "uid=$2,o=caps,ou=professors,dc=edt,dc=org"
+authz-regexp "^email=([^,]+),cn=([^,]+),ou=professors,o=becaris.*,c=ES$" "uid=$2,o=becaris,ou=professors,dc=edt,dc=org"
 
 ```
 		
