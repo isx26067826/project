@@ -23,7 +23,7 @@ docker run --name skerberos -h skerberos.edt.org --net=ssf --add-host=ldapserver
 
 LDAP SERVER
 
-Per veure el Dockerfile click [aquí](https://github.com/isx26067826/project/blob/master/sources/sff/ldapserver/Dockerfile).
+Per veure el Dockerfile click [aquí](https://github.com/isx26067826/project/blob/master/sources/ssf/ldapserver/Dockerfile).
 
 
 ```bash
@@ -34,7 +34,7 @@ docker run --name ldapserver -h ldapserver.edt.org --net ssf --add-host=skerbero
 
 CLIENT
 
-Per veure el Dockerfile click [aquí](https://github.com/isx26067826/project/blob/master/sources/sff/client/Dockerfile).
+Per veure el Dockerfile click [aquí](https://github.com/isx26067826/project/blob/master/sources/ssf/client/Dockerfile).
 
 
 ```bash
