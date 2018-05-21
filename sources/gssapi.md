@@ -382,4 +382,4 @@ dn:uid=anna,o=mati,ou=professors,dc=edt,dc=org
 ```
 
 Si vols practicar i experimentar amb aquesta configuració del model d'autenticació gssapi et convido a poguer fer-lo
-tu mateix per sapiguer dona click [aquí](https://github.com/isx26067826/project/tree/master/sources/gssapi-execute.md)
+tu mateix, dona click [aquí](https://github.com/isx26067826/project/tree/master/sources/gssapi-execute.md)
