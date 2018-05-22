@@ -13,7 +13,7 @@ Per poguer comprovar aquest metode he comprovat aquesta configuració amb el exe
 L'opció que utilitza el fitxer de configuració es *security* que determina les diferents regles que ha complir, algunes son aquestes:
 
 
-|  LDAP SERVER SSF     |                                              Opcions                                                   |
+|  LDAP SERVER SSF     |                                              Opcions                                                    |
 | -------------------- |:-------------------------------------------------------------------------------------------------------:|
 | ssf		 	  	   | Defineix les ssf en general 																			 |
 | transport     	   | Defineix les ssf en el transport                                      									 |

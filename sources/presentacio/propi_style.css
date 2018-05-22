@@ -39,19 +39,21 @@
   /* Figures are displayed full-page, with the caption on
      top of the image/video */
   figure {
-    background-color: black;
+    background-color: white;
+    padding: 70px;  
+}
+    figcaption {
+    margin: 10px;
   }
-  figcaption {
-    margin: 70px;
-  }
+
   footer {
     position: absolute;
     bottom: 0;
     width: 100%;
-    padding: 40px;
-    text-align: right;
+    padding: 90px;
+    text-align: center;
     background-color: #F3F4F8;
-    border-top: 1px solid #CCC;
+    border-top: 10px solid #CCC;
   }
 
   /* Transition effect */

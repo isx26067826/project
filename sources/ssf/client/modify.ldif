@@ -1,0 +1,5 @@
+dn: uid=roger,o=becaris,ou=professors,dc=edt,dc=org
+delete: description
+-
+add: description
+description: Description modificat amb ldap gssapi
