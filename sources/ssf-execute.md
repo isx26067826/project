@@ -17,7 +17,7 @@ Per veure el Dockerfile click [aquí](https://github.com/isx26067826/project/blo
 
 ```bash
 
-docker run --name skerberos -h skerberos.edt.org --net=ssf --add-host=ldapserver.edt.org:172.70.0.3 --ip 172.70.0.2 -d kerberos 
+docker run --name skerberos -h skerberos.edt.org --net=ssf --add-host=ldapserver.edt.org:172.70.0.3 --ip 172.70.0.2 -d nickdunaway/ssf-kerberos 
 
 ```
 
@@ -28,7 +28,7 @@ Per veure el Dockerfile click [aquí](https://github.com/isx26067826/project/blo
 
 ```bash
 
-docker run --name ldapserver -h ldapserver.edt.org --net ssf --add-host=skerberos.edt.org:172.70.0.2 --ip 172.70.0.3 -it ldapserver 
+docker run --name ldapserver -h ldapserver.edt.org --net ssf --add-host=skerberos.edt.org:172.70.0.2 --ip 172.70.0.3 -d nickdunaway/ssf-ldapserver
 
 ```
 
@@ -39,7 +39,7 @@ Per veure el Dockerfile click [aquí](https://github.com/isx26067826/project/blo
 
 ```bash
 
-docker run --name client -h client.edt.org --net=ssf  --add-host=skerberos.edt.org:172.70.0.2 --add-host=ldapserver.edt.org:172.70.0.3 --ip 172.70.0.4 -it client
+docker run --name client -h client.edt.org --net=ssf  --add-host=skerberos.edt.org:172.70.0.2 --add-host=ldapserver.edt.org:172.70.0.3 --ip 172.70.0.4 -it nickdunaway/ssf-client
 
 ```
 
