@@ -305,7 +305,7 @@ Crear la base de dades de kerberos
 	
 ---
 
-## Afegir els principals
+### Afegir els principals
 
 	admin/admin
 	pau/alumnes
@@ -335,7 +335,7 @@ Crear la base de dades de kerberos
 
 ---
 
-## Afegir els principals (II)
+### Afegir els principals (II)
 
 	#! /bin/bash
 	#Nick Inga Reynaldo
@@ -358,6 +358,8 @@ Afegir el servei ldap al principals
 	
 	/usr/sbin/kadmin.local -q "addprinc -pw randkey ldap/ldapserver.edt.org"
 
+	/usr/sbin/krb5kdc -P /var/run/krb5kdc.pid $KRB5KDC_ARGS
+	/usr/sbin/kadmind -nofork -P /var/run/kadmind.pid $KADMIND_ARGS
 ---
 
 ### Fitxers de configuracions Ldapserver

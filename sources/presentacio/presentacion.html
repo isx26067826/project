@@ -246,8 +246,9 @@ cyrus-sasl-ldap</code></pre>
 <pre><code>*/admin@EDT.ORG *</code></pre>
 <p>Crear la base de dades de kerberos</p>
 <pre><code>/usr/sbin/kdb5_util create -P masterkey -s</code></pre>
-</section><section id="afegir-els-principals" class="slide level2">
-<h1>Afegir els principals</h1>
+</section><section class="slide level2">
+
+<h3 id="afegir-els-principals">Afegir els principals</h3>
 <pre><code>admin/admin
 pau/alumnes
 pere/alumnes
@@ -273,8 +274,9 @@ robert/professors.tarda
 bernat/professors.mati
 carme/professors.caps
 roger/professors.becaris</code></pre>
-</section><section id="afegir-els-principals-ii" class="slide level2">
-<h1>Afegir els principals (II)</h1>
+</section><section class="slide level2">
+
+<h3 id="afegir-els-principals-ii">Afegir els principals (II)</h3>
 <pre><code>#! /bin/bash
 #Nick Inga Reynaldo
 #Projecte LDAP GSSAPI
@@ -292,7 +294,10 @@ do
 
 done &lt; usuaris </code></pre>
 <p>Afegir el servei ldap al principals</p>
-<pre><code>/usr/sbin/kadmin.local -q &quot;addprinc -pw randkey ldap/ldapserver.edt.org&quot;</code></pre>
+<pre><code>/usr/sbin/kadmin.local -q &quot;addprinc -pw randkey ldap/ldapserver.edt.org&quot;
+
+/usr/sbin/krb5kdc -P /var/run/krb5kdc.pid $KRB5KDC_ARGS
+/usr/sbin/kadmind -nofork -P /var/run/kadmind.pid $KADMIND_ARGS</code></pre>
 </section><section class="slide level2">
 
 <h3 id="fitxers-de-configuracions-ldapserver">Fitxers de configuracions Ldapserver</h3>
