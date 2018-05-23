@@ -1,0 +1,903 @@
+SLAPD.CONF(5)                                                   File Formats Manual                                                  SLAPD.CONF(5)
+
+[1mNAME[0m
+       slapd.conf - configuration file for slapd, the stand-alone LDAP daemon
+
+[1mSYNOPSIS[0m
+       /etc/openldap/slapd.conf
+
+[1mDESCRIPTION[0m
+       The  file [1m/etc/openldap/slapd.conf [22mcontains configuration information for the [1mslapd[22m(8) daemon.  This configuration file is also used by the
+       SLAPD tools [1mslapacl[22m(8), [1mslapadd[22m(8), [1mslapauth[22m(8), [1mslapcat[22m(8), [1mslapdn[22m(8), [1mslapindex[22m(8), and [1mslaptest[22m(8).
+
+       The [1mslapd.conf [22mfile consists of a series of global configuration options that apply to [1mslapd [22mas a whole (including all backends),  followed
+       by  zero or more database backend definitions that contain information specific to a backend instance.  The configuration options are case-
+       insensitive; their value, on a case by case basis, may be case-sensitive.
+
+       The general format of [1mslapd.conf [22mis as follows:
+
+           # comment - these options apply to every database
+           <global configuration options>
+           # first database definition & configuration options
+           database <backend 1 type>
+           <configuration options specific to backend 1>
+           # subsequent database definitions & configuration options
+           ...
+
+       As many backend-specific sections as desired may be included.  Global options can be overridden in a backend (for options that appear  more
+       than once, the last appearance in the [1mslapd.conf [22mfile is used).
+
+       If a line begins with white space, it is considered a continuation of the previous line.  No physical line should be over 2000 bytes long.
+
+       Blank lines and comment lines beginning with a `#' character are ignored.  Note: continuation lines are unwrapped before comment processing
+       is applied.
+
+       Arguments on configuration lines are separated by white space. If an argument contains white space, the argument should be enclosed in dou‐
+       ble  quotes.   If an argument contains a double quote (`"') or a backslash character (`\'), the character should be preceded by a backslash
+       character.
+
+       The specific configuration options available are discussed below in the Global Configuration Options, General Backend Options, and  General
+       Database  Options.   Backend-specific options are discussed in the [1mslapd-<backend>(5) [22mmanual pages.  Refer to the "OpenLDAP Administrator's
+       Guide" for more details on the slapd configuration file.
+
+[1mGLOBAL CONFIGURATION OPTIONS[0m
+       Options described in this section apply to all backends, unless specifically overridden in a backend definition. Arguments that  should  be
+       replaced by actual text are shown in brackets <>.
+
+       [1maccess to <what> [ by <who> <access> <control> ]+[0m
+              Grant  access  (specified by <access>) to a set of entries and/or attributes (specified by <what>) by one or more requestors (speci‐
+              fied by <who>).  If no access controls are present, the default policy allows anyone and everyone to  read  anything  but  restricts
+              updates  to rootdn.  (e.g., "access to * by * read").  The rootdn can always read and write EVERYTHING!  See [1mslapd.access[22m(5) and the
+              "OpenLDAP's Administrator's Guide" for details.
+
+       [1mallow <features>[0m
+              Specify a set of features (separated by white space) to allow (default none).  [1mbind_v2 [22mallows acceptance of  LDAPv2  bind  requests.
+              Note  that  [1mslapd[22m(8) does not truly implement LDAPv2 (RFC 1777), now Historic (RFC 3494).  [1mbind_anon_cred [22mallows anonymous bind when
+              credentials are not empty (e.g.  when DN is empty).  [1mbind_anon_dn [22mallows unauthenticated (anonymous) bind  when  DN  is  not  empty.
+              [1mupdate_anon  [22mallows  unauthenticated (anonymous) update operations to be processed (subject to access controls and other administra‐
+              tive limits).  [1mproxy_authz_anon [22mallows unauthenticated (anonymous) proxy authorization control to be processed  (subject  to  access
+              controls, authorization and other administrative limits).
+
+       [1margsfile <filename>[0m
+              The (absolute) name of a file that will hold the [1mslapd [22mserver's command line (program name and options).
+
+       [1mattributeoptions [option-name]...[0m
+              Define  tagging  attribute  options  or  option tag/range prefixes.  Options must not end with `-', prefixes must end with `-'.  The
+              `lang-' prefix is predefined.  If you use the [1mattributeoptions [22mdirective, `lang-' will no longer be defined and you must specify  it
+              explicitly if you want it defined.
+
+              An  attribute  description  with  a  tagging option is a subtype of that attribute description without the option.  Except for that,
+              options defined this way have no special semantics.  Prefixes defined this way work like the `lang-' options: They define  a  prefix
+              for tagging options starting with the prefix.  That is, if you define the prefix `x-foo-', you can use the option `x-foo-bar'.  Fur‐
+              thermore, in a search or compare, a prefix or range name (with a trailing `-') matches all options starting with that name, as  well
+              as the option with the range name sans the trailing `-'.  That is, `x-foo-bar-' matches `x-foo-bar' and `x-foo-bar-baz'.
+
+              RFC  4520  reserves options beginning with `x-' for private experiments.  Other options should be registered with IANA, see RFC 4520
+              section 3.5.  OpenLDAP also has the `binary' option built in, but this is a transfer option, not a tagging option.
+
+       [1mattributetype  ( <oid>  [NAME <name>]  [DESC <description>]  [OBSOLETE]  [SUP <oid>]   [EQUALITY <oid>]   [ORDERING <oid>]   [SUBSTR <oid>][0m
+              [1m[SYNTAX <oidlen>] [SINGLE-VALUE] [COLLECTIVE] [NO-USER-MODIFICATION] [USAGE <attributeUsage>] )[0m
+              Specify an attribute type using the LDAPv3 syntax defined in RFC 4512.  The slapd parser extends the RFC 4512 definition by allowing
+              string forms as well as numeric OIDs to be used for  the  attribute  OID  and  attribute  syntax  OID.   (See  the  [1mobjectidentifier[0m
+              description.)
+
+       [1mauthid-rewrite<cmd> <args>[0m
+              Used  by  the  authentication  framework to convert simple user names to an LDAP DN used for authorization purposes.  Its purpose is
+              analogous to that of [1mauthz-regexp [22m(see below).  The prefix [4mauthid-[24m is followed by a set of rules analogous  to  those  described  in
+              [1mslapo-rwm[22m(5)  for  data  rewriting (replace the [4mrwm-[24m prefix with [4mauthid-[24m).  [1mauthid-rewrite<cmd> [22mand [1mauthz-regexp [22mrules should not be
+              intermixed.
+
+       [1mauthz-policy <policy>[0m
+              Used to specify which rules to use for Proxy Authorization.  Proxy authorization allows a client to authenticate to the server using
+              one user's credentials, but specify a different identity to use for authorization and access control purposes. It essentially allows
+              user A to login as user B, using user A's password.  The [1mnone [22mflag disables proxy authorization. This is the default  setting.   The
+              [1mfrom [22mflag will use rules in the [4mauthzFrom[24m attribute of the authorization DN.  The [1mto [22mflag will use rules in the [4mauthzTo[24m attribute of
+              the authentication DN.  The [1many [22mflag, an alias for the deprecated value of [1mboth[22m, will allow any  of  the  above,  whatever  succeeds
+              first (checked in [1mto[22m, [1mfrom [22msequence.  The [1mall [22mflag requires both authorizations to succeed.
+
+              The  rules  are  mechanisms  to  specify which identities are allowed to perform proxy authorization.  The [4mauthzFrom[24m attribute in an
+              entry specifies which other users are allowed to proxy login to this entry. The [4mauthzTo[24m attribute in an entry specifies which  other
+              users  this user can authorize as.  Use of [4mauthzTo[24m rules can be easily abused if users are allowed to write arbitrary values to this
+              attribute.  In general the [4mauthzTo[24m attribute must be protected with ACLs such that only privileged users can modify it.   The  value
+              of [4mauthzFrom[24m and [4mauthzTo[24m describes an [1midentity [22mor a set of identities; it can take five forms:
+
+                     [1mldap:///<base>??[<scope>]?<filter>[0m
+                     [1mdn[.<dnstyle>]:<pattern>[0m
+                     [1mu[.<mech>[/<realm>]]:<pattern>[0m
+                     [1mgroup[/objectClass[/attributeType]]:<pattern>[0m
+                     [1m<pattern>[0m
+
+                     [1m<dnstyle>:={exact|onelevel|children|subtree|regex}[0m
+
+              The  first  form  is a valid LDAP [1mURI [22mwhere the [4m<host>:<port>[24m, the [4m<attrs>[24m and the [4m<extensions>[24m portions must be absent, so that the
+              search occurs locally on either [4mauthzFrom[24m or [4mauthzTo[24m.  The second form is a [1mDN[22m, with the optional style modifiers  [4mexact[24m,  [4monelevel[24m,
+              [4mchildren[24m,  and [4msubtree[24m for exact, onelevel, children and subtree matches, which cause [4m<pattern>[24m to be normalized according to the DN
+              normalization rules, or the special [4mregex[24m style, which causes the  [4m<pattern>[24m  to  be  treated  as  a  POSIX  (''extended'')  regular
+              expression,  as discussed in [1mregex[22m(7) and/or [1mre_format[22m(7).  A pattern of [4m*[24m means any non-anonymous DN.  The third form is a SASL [1mid[22m,
+              with the optional fields [4m<mech>[24m and [4m<realm>[24m that allow to specify  a  SASL  [1mmechanism[22m,  and  eventually  a  SASL  [1mrealm[22m,  for  those
+              mechanisms  that  support  one.   The  need  to  allow  the  specification  of  a mechanism is still debated, and users are strongly
+              discouraged to rely on this possibility.  The fourth form is a group specification, consisting  of  the  keyword  [1mgroup[22m,  optionally
+              followed  by the specification of the group [1mobjectClass [22mand member [1mattributeType[22m.  The group with DN [1m<pattern> [22mis searched with base
+              scope, and in case of match, the values of the member [1mattributeType [22mare searched for the asserted DN.  For backwards  compatibility,
+              if no identity type is provided, i.e. only [1m<pattern> [22mis present, an [4mexact[24m [4mDN[24m is assumed; as a consequence, [1m<pattern> [22mis subjected to
+              DN normalization.  Since the interpretation of [4mauthzFrom[24m  and  [4mauthzTo[24m  can  impact  security,  users  are  strongly  encouraged  to
+              explicitly  set  the  type  of  identity  specification that is being used.  A subset of these rules can be used as third arg in the
+              [1mauthz-regexp [22mstatement (see below); significantly, the [4mURI[24m, provided it results in exactly one entry, and the [4mdn.exact:<dn>[24m forms.
+
+       [1mauthz-regexp <match> <replace>[0m
+              Used by the authentication framework to convert  simple  user  names,  such  as  provided  by  SASL  subsystem,  or  extracted  from
+              certificates  in  case  of  cert-based SASL EXTERNAL, or provided within the RFC 4370 "proxied authorization" control, to an LDAP DN
+              used for authorization purposes.  Note that the resulting DN need not refer to an existing entry to be considered  valid.   When  an
+              authorization  request  is  received from the SASL subsystem, the SASL [1mUSERNAME[22m, [1mREALM[22m, and [1mMECHANISM [22mare taken, when available, and
+              combined into a name of the form
+
+                     [1mUID=<username>[[,CN=<realm>],CN=<mechanism>],CN=auth[0m
+
+              This name is then compared against the [1mmatch [22mPOSIX (''extended'') regular expression, and if the match is successful,  the  name  is
+              replaced  with  the [1mreplace [22mstring.  If there are wildcard strings in the [1mmatch [22mregular expression that are enclosed in parenthesis,
+              e.g.
+
+                     [1mUID=([^,]*),CN=.*[0m
+
+              then the portion of the name that matched the wildcard will be stored in the numbered placeholder variable $1. If  there  are  other
+              wildcard  strings  in  parenthesis,  the matching strings will be in $2, $3, etc. up to $9. The placeholders can then be used in the
+              [1mreplace [22mstring, e.g.
+
+                     [1mUID=$1,OU=Accounts,DC=example,DC=com[0m
+
+              The replaced name can be either a DN, i.e. a string prefixed by "dn:", or an LDAP URI.  If the latter, the server will use  the  URI
+              to search its own database(s) and, if the search returns exactly one entry, the name is replaced by the DN of that entry.   The LDAP
+              URI must have no hostport, attrs, or extensions components, but the filter is mandatory, e.g.
+
+                     [1mldap:///OU=Accounts,DC=example,DC=com??one?(UID=$1)[0m
+
+              The protocol portion of the URI must be strictly [1mldap[22m.  Note that this search is subject  to  access  controls.   Specifically,  the
+              authentication identity must have "auth" access in the subject.
+
+              Multiple  [1mauthz-regexp  [22moptions  can be given in the configuration file to allow for multiple matching and replacement patterns. The
+              matching patterns are checked in the order they appear in the file, stopping at the first successful match.
+
+       [1mconcurrency <integer>[0m
+              Specify a desired level of concurrency.  Provided to the underlying thread system as a hint.  The default  is  not  to  provide  any
+              hint.
+
+       [1mconn_max_pending <integer>[0m
+              Specify  the  maximum  number  of  pending  requests for an anonymous session.  If requests are submitted faster than the server can
+              process them, they will be queued up to this limit. If the limit is exceeded, the session is closed. The default is 100.
+
+       [1mconn_max_pending_auth <integer>[0m
+              Specify the maximum number of pending requests for an authenticated session.  The default is 1000.
+
+       [1mdefaultsearchbase <dn>[0m
+              Specify a default search base to use when client submits a non-base search request with  an  empty  base  DN.   Base  scoped  search
+              requests with an empty base DN are not affected.
+
+       [1mdisallow <features>[0m
+              Specify  a  set  of features (separated by white space) to disallow (default none).  [1mbind_anon [22mdisables acceptance of anonymous bind
+              requests.  Note that this setting does not prohibit anonymous directory access (See "require authc").  [1mbind_simple  [22mdisables  simple
+              (bind)  authentication.   [1mtls_2_anon  [22mdisables  forcing  session  to  anonymous  status (see also [1mtls_authc[22m) upon StartTLS operation
+              receipt.  [1mtls_authc [22mdisallows the StartTLS operation if authenticated  (see  also  [1mtls_2_anon[22m).   [1mproxy_authz_non_critical  [22mdisables
+              acceptance  of  the proxied authorization control (RFC4370) when criticality is FALSE.  [1mdontusecopy_non_critical [22mdisables acceptance
+              of the dontUseCopy control (a work in progress) when criticality is FALSE.
+
+       [1mditcontentrule ( <oid> [NAME <name>] [DESC <description>] [OBSOLETE] [AUX <oids>] [MUST <oids>] [MAY <oids>] [NOT <oids>] )[0m
+              Specify an DIT Content Rule using the LDAPv3 syntax defined in RFC 4512.  The slapd  parser  extends  the  RFC  4512  definition  by
+              allowing  string forms as well as numeric OIDs to be used for the attribute OID and attribute syntax OID.  (See the [1mobjectidentifier[0m
+              description.)
+
+       [1mgentlehup { on | off }[0m
+              A SIGHUP signal will only cause a 'gentle' shutdown-attempt: [1mSlapd [22mwill stop listening for new connections, but will not  close  the
+              connections to the current clients.  Future write operations return unwilling-to-perform, though.  Slapd terminates when all clients
+              have closed their connections (if they ever do), or - as before - if it receives a SIGTERM signal.  This can be useful if  you  wish
+              to  terminate  the  server and start a new [1mslapd [22mserver [1mwith another database, [22mwithout disrupting the currently active clients.  The
+              default is off.  You may wish to use [1midletimeout [22malong with this option.
+
+       [1midletimeout <integer>[0m
+              Specify the number of seconds to wait before forcibly closing an idle client connection.  A idletimeout of 0 disables this  feature.
+              The default is 0. You may also want to set the [1mwritetimeout [22moption.
+
+       [1minclude <filename>[0m
+              Read additional configuration information from the given file before continuing with the next line of the current file.
+
+       [1mindex_intlen <integer>[0m
+              Specify  the  key  length for ordered integer indices. The most significant bytes of the binary integer will be used for index keys.
+              The default value is 4, which provides exact indexing for 31 bit values.  A floating point representation is used to index too large
+              values.
+
+       [1mindex_substr_if_minlen <integer>[0m
+              Specify  the minimum length for subinitial and subfinal indices. An attribute value must have at least this many characters in order
+              to be processed by the indexing functions. The default is 2.
+
+       [1mindex_substr_if_maxlen <integer>[0m
+              Specify the maximum length for subinitial and subfinal indices. Only this many characters of an attribute value will be processed by
+              the indexing functions; any excess characters are ignored. The default is 4.
+
+       [1mindex_substr_any_len <integer>[0m
+              Specify  the  length  used  for subany indices. An attribute value must have at least this many characters in order to be processed.
+              Attribute values longer than this length will be processed in segments of this length. The default is 4. The subany index will  also
+              be used in subinitial and subfinal index lookups when the filter string is longer than the [4mindex_substr_if_maxlen[24m value.
+
+       [1mindex_substr_any_step <integer>[0m
+              Specify  the  steps  used in subany index lookups. This value sets the offset for the segments of a filter string that are processed
+              for a subany index lookup. The default is 2. For example, with the default values, a search using this filter "cn=*abcdefgh*"  would
+              generate index lookups for "abcd", "cdef", and "efgh".
+
+       Note:  Indexing support depends on the particular backend in use. Also, changing these settings will generally require deleting any indices
+       that depend on these parameters and recreating them with [1mslapindex[22m(8).
+
+       [1mldapsyntax ( <oid> [DESC <description>] [X-SUBST <substitute-syntax>] )[0m
+              Specify an LDAP syntax using the LDAPv3 syntax defined in RFC 4512.  The slapd parser extends the RFC 4512  definition  by  allowing
+              string  forms as well as numeric OIDs to be used for the syntax OID.  (See the [1mobjectidentifier [22mdescription.)  The slapd parser also
+              honors the [1mX-SUBST [22mextension (an OpenLDAP-specific extension), which allows one to use the [1mldapsyntax [22mstatement  to  define  a  non-
+              implemented  syntax along with another syntax, the extension value [4msubstitute-syntax[24m, as its temporary replacement.  The [4msubstitute-[0m
+              [4msyntax[24m must be defined.  This allows one to define attribute types that make use  of  non-implemented  syntaxes  using  the  correct
+              syntax OID.  Unless [1mX-SUBST [22mis used, this configuration statement would result in an error, since no handlers would be associated to
+              the resulting syntax structure.
+
+       [1mlistener-threads <integer>[0m
+              Specify the number of threads to use for the connection manager.  The default is 1 and this is typically adequate for up to  16  CPU
+              cores.  The value should be set to a power of 2.
+
+       [1mlocalSSF <SSF>[0m
+              Specifies  the  Security  Strength  Factor  (SSF)  to  be  given local LDAP sessions, such as those to the ldapi:// listener.  For a
+              description of SSF values, see [1msasl-secprops[22m's [1mminssf [22moption description.  The default is 71.
+
+       [1mlogfile <filename>[0m
+              Specify a file for recording debug log messages. By default these messages only go to stderr and are  not  recorded  anywhere  else.
+              Specifying a logfile copies messages to both stderr and the logfile.
+
+       [1mloglevel <integer> [...][0m
+              Specify  the  level  at  which debugging statements and operation statistics should be syslogged (currently logged to the [1msyslogd[22m(8)
+              LOG_LOCAL4 facility).  They must be considered subsystems rather than increasingly verbose log levels.  Some  messages  with  higher
+              priority  are  logged  regardless  of  the  configured  loglevel as soon as any logging is configured.  Log levels are additive, and
+              available levels are:
+                     [1m1      (0x1 trace) [22mtrace function calls
+                     [1m2      (0x2 packets) [22mdebug packet handling
+                     [1m4      (0x4 args) [22mheavy trace debugging (function args)
+                     [1m8      (0x8 conns) [22mconnection management
+                     [1m16     (0x10 BER) [22mprint out packets sent and received
+                     [1m32     (0x20 filter) [22msearch filter processing
+                     [1m64     (0x40 config) [22mconfiguration file processing
+                     [1m128    (0x80 ACL) [22maccess control list processing
+                     [1m256    (0x100 stats) [22mconnections, LDAP operations, results (recommended)
+                     [1m512    (0x200 stats2) [22mstats log entries sent
+                     [1m1024   (0x400 shell) [22mprint communication with shell backends
+                     [1m2048   (0x800 parse) [22mentry parsing
+
+                     [1m16384  (0x4000 sync) [22mLDAPSync replication
+                     [1m32768  (0x8000 none) [22monly messages that get logged whatever log level is set
+              The desired log level can be input as a single integer that combines the (ORed) desired levels, both in decimal  or  in  hexadecimal
+              notation, as a list of integers (that are ORed internally), or as a list of the names that are shown between parentheses, such that
+
+                  loglevel 129
+                  loglevel 0x81
+                  loglevel 128 1
+                  loglevel 0x80 0x1
+                  loglevel acl trace
+
+              are equivalent.  The keyword [1many [22mcan be used as a shortcut to enable logging at all levels (equivalent to -1).  The keyword [1mnone[22m, or
+              the equivalent integer representation, causes those messages that are logged regardless of the configured loglevel to be logged.  In
+              fact, if loglevel is set to 0, no logging occurs, so at least the [1mnone [22mlevel is required to have high priority messages logged.
+
+              The loglevel defaults to [1mstats[22m.  This level should usually also be included when using other loglevels, to help analyze the logs.
+
+       [1mmoduleload <filename>[0m
+              Specify  the  name  of  a  dynamically loadable module to load. The filename may be an absolute path name or a simple filename. Non-
+              absolute names are searched for in the directories specified by the [1mmodulepath [22moption. This option and  the  [1mmodulepath  [22moption  are
+              only usable if slapd was compiled with --enable-modules.
+
+       [1mmodulepath <pathspec>[0m
+              Specify  a  list  of  directories  to  search  for  loadable  modules. Typically the path is colon-separated but this depends on the
+              operating system.  The default is /usr/lib64/openldap, which is where the standard OpenLDAP install will place its modules.
+
+       [1mobjectclass ( <oid> [NAME <name>] [DESC <description>] [OBSOLETE] [SUP <oids>] [{  ABSTRACT  |  STRUCTURAL  |  AUXILIARY  }]  [MUST <oids>][0m
+              [1m[MAY <oids>] )[0m
+              Specify  an  objectclass  using the LDAPv3 syntax defined in RFC 4512.  The slapd parser extends the RFC 4512 definition by allowing
+              string forms as well as numeric OIDs to be used for the object class OID.  (See the [1mobjectidentifier [22mdescription.)   Object  classes
+              are "STRUCTURAL" by default.
+
+       [1mobjectidentifier <name> { <oid> | <name>[:<suffix>] }[0m
+              Define  a string name that equates to the given OID. The string can be used in place of the numeric OID in objectclass and attribute
+              definitions. The name can also be used with a suffix of the form ":xx" in which case the value "oid.xx" will be used.
+
+       [1mpassword-hash <hash> [<hash>...][0m
+              This option configures one or more hashes to be used in generation of user passwords stored in  the  userPassword  attribute  during
+              processing of LDAP Password Modify Extended Operations (RFC 3062).  The <hash> must be one of [1m{SSHA}[22m, [1m{SHA}[22m, [1m{SMD5}[22m, [1m{MD5}[22m, [1m{CRYPT}[22m,
+              and [1m{CLEARTEXT}[22m.  The default is [1m{SSHA}[22m.
+
+              [1m{SHA} [22mand [1m{SSHA} [22muse the SHA-1 algorithm (FIPS 160-1), the latter with a seed.
+
+              [1m{MD5} [22mand [1m{SMD5} [22muse the MD5 algorithm (RFC 1321), the latter with a seed.
+
+              [1m{CRYPT} [22muses the [1mcrypt[22m(3).
+
+              [1m{CLEARTEXT} [22mindicates that the new password should be added to userPassword as clear text.
+
+              Note that this option does not alter the normal user applications handling of userPassword during LDAP Add, Modify,  or  other  LDAP
+              operations.
+
+       [1mpassword-crypt-salt-format <format>[0m
+              Specify  the  format  of the salt passed to [1mcrypt[22m(3) when generating {CRYPT} passwords (see [1mpassword-hash[22m) during processing of LDAP
+              Password Modify Extended Operations (RFC 3062).
+
+              This string needs to be in [1msprintf[22m(3) format and may include one (and only one) %s conversion.  This conversion will be  substituted
+              with  a  string of random characters from [A-Za-z0-9./].  For example, "%.2s" provides a two character salt and "$1$%.8s" tells some
+              versions of crypt(3) to use an MD5 algorithm and provides 8 random characters of salt.  The  default  is  "%s",  which  provides  31
+              characters of salt.
+
+       [1mpidfile <filename>[0m
+              The (absolute) name of a file that will hold the [1mslapd [22mserver's process ID (see [1mgetpid[22m(2)).
+
+       [1mreferral <url>[0m
+              Specify the referral to pass back when [1mslapd[22m(8) cannot find a local database to handle a request.  If specified multiple times, each
+              url is provided.
+
+       [1mrequire <conditions>[0m
+              Specify a set of conditions (separated by white space) to require (default none).  The directive may be  specified  globally  and/or
+              per-database;  databases inherit global conditions, so per-database specifications are additive.  [1mbind [22mrequires bind operation prior
+              to directory operations.  [1mLDAPv3 [22mrequires session to be using LDAP version 3.  [1mauthc  [22mrequires  authentication  prior  to  directory
+              operations.   [1mSASL  [22mrequires  SASL  authentication  prior  to  directory operations.  [1mstrong [22mrequires strong authentication prior to
+              directory operations.  The strong keyword allows protected "simple" authentication as well as SASL authentication.  [1mnone [22mmay be used
+              to require no conditions (useful to clear out globally set conditions within a particular database); it must occur first in the list
+              of conditions.
+
+       [1mreverse-lookup on | off[0m
+              Enable/disable client name unverified reverse lookup (default is [1moff [22mif compiled with --enable-rlookups).
+
+       [1mrootDSE <file>[0m
+              Specify the name of an LDIF(5) file containing user defined attributes for the root DSE.  These attributes are returned in  addition
+              to the attributes normally produced by slapd.
+
+              The  root  DSE  is an entry with information about the server and its capabilities, in operational attributes.  It has the empty DN,
+              and can be read with e.g.:
+                  ldapsearch -x -b "" -s base "+"
+              See RFC 4512 section 5.1 for details.
+
+       [1msasl-auxprops <plugin> [...][0m
+              Specify which auxprop plugins to use for authentication lookups. The default is empty, which just  uses  slapd's  internal  support.
+              Usually no other auxprop plugins are needed.
+
+       [1msasl-host <fqdn>[0m
+              Used to specify the fully qualified domain name used for SASL processing.
+
+       [1msasl-realm <realm>[0m
+              Specify SASL realm.  Default is empty.
+
+       [1msasl-secprops <properties>[0m
+              Used  to  specify  Cyrus SASL security properties.  The [1mnone [22mflag (without any other properties) causes the flag properties default,
+              "noanonymous,noplain", to be cleared.  The [1mnoplain [22mflag disables mechanisms susceptible to simple  passive  attacks.   The  [1mnoactive[0m
+              flag  disables  mechanisms  susceptible  to  active  attacks.  The [1mnodict [22mflag disables mechanisms susceptible to passive dictionary
+              attacks.  The [1mnoanonymous [22mflag disables mechanisms which support anonymous login.   The  [1mforwardsec  [22mflag  require  forward  secrecy
+              between sessions.  The [1mpasscred [22mrequire mechanisms which pass client credentials (and allow mechanisms which can pass credentials to
+              do so).  The [1mminssf=<factor> [22mproperty specifies the minimum acceptable  [4msecurity[24m  [4mstrength[24m  [4mfactor[24m  as  an  integer  approximate  to
+              effective  key  length  used  for encryption.  0 (zero) implies no protection, 1 implies integrity protection only, 56 allows DES or
+              other weak ciphers, 112 allows triple DES and other strong ciphers, 128 allows RC4, Blowfish and other modern strong  ciphers.   The
+              default  is  0.   The  [1mmaxssf=<factor>  [22mproperty specifies the maximum acceptable [4msecurity[24m [4mstrength[24m [4mfactor[24m as an integer (see minssf
+              description).  The default is INT_MAX.  The [1mmaxbufsize=<size> [22mproperty specifies the maximum  security  layer  receive  buffer  size
+              allowed.  0 disables security layers.  The default is 65536.
+
+       [1mschemadn <dn>[0m
+              Specify the distinguished name for the subschema subentry that controls the entries on this server.  The default is "cn=Subschema".
+
+       [1msecurity <factors>[0m
+              Specify  a  set  of  security  strength  factors  (separated  by  white  space)  to require (see [1msasl-secprops[22m's [1mminssf [22moption for a
+              description of security strength factors).  The directive may be specified globally  and/or  per-database.   [1mssf=<n>  [22mspecifies  the
+              overall  security  strength  factor.   [1mtransport=<n>  [22mspecifies  the  transport security strength factor.  [1mtls=<n> [22mspecifies the TLS
+              security strength factor.  [1msasl=<n> [22mspecifies the SASL security strength factor.   [1mupdate_ssf=<n>  [22mspecifies  the  overall  security
+              strength  factor to require for directory updates.  [1mupdate_transport=<n> [22mspecifies the transport security strength factor to require
+              for directory updates.  [1mupdate_tls=<n> [22mspecifies the TLS security strength factor to require for directory updates.  [1mupdate_sasl=<n>[0m
+              specifies  the  SASL  security  strength  factor  to require for directory updates.  [1msimple_bind=<n> [22mspecifies the security strength
+              factor required for [4msimple[24m username/password authentication.  Note that the [1mtransport [22mfactor is measure of security provided by  the
+              underlying transport, e.g. ldapi:// (and eventually IPSEC).  It is not normally used.
+
+       [1mserverID <integer> [<URL>][0m
+              Specify  an  integer  ID  from  0  to  4095  for  this  server (limited to 3 hexadecimal digits).  The ID may also be specified as a
+              hexadecimal ID by prefixing the value with "0x".  Non-zero IDs are required when using multimaster replication and each master  must
+              have a unique non-zero ID. Note that this requirement also applies to separate masters contributing to a glued set of databases.  If
+              the URL is provided, this directive may be specified multiple times, providing a complete list of participating  servers  and  their
+              IDs.  The fully qualified hostname of each server should be used in the supplied URLs. The IDs are used in the "replica id" field of
+              all CSNs generated by the specified server. The default value is zero, which is only valid for single master replication.  Example:
+
+            serverID 1
+
+       [1msizelimit {<integer>|unlimited}[0m
+
+       [1msizelimit size[.{soft|hard|unchecked}]=<integer> [...][0m
+              Specify the maximum number of entries to return from a search operation.  The default size limit is 500.  Use [1munlimited  [22mto  specify
+              no limits.  The second format allows a fine grain setting of the size limits.  Extra args can be added on the same line.  See [1mlimits[0m
+              for an explanation of the different flags.
+
+       [1msockbuf_max_incoming <integer>[0m
+              Specify the maximum incoming LDAP PDU size for anonymous sessions.  The default is 262143.
+
+       [1msockbuf_max_incoming_auth <integer>[0m
+              Specify the maximum incoming LDAP PDU size for authenticated sessions.  The default is 4194303.
+
+       [1msortvals <attr> [...][0m
+              Specify a list of multi-valued attributes whose values will always be maintained in sorted  order.  Using  this  option  will  allow
+              Modify,  Compare,  and  filter evaluations on these attributes to be performed more efficiently. The resulting sort order depends on
+              the attributes' syntax and matching rules and may not correspond to lexical order or any other recognizable order.
+
+       [1mtcp-buffer [listener=<URL>] [{read|write}=]<size>[0m
+              Specify the size of the TCP buffer.  A global value for both read and write TCP buffers related to any listener is  defined,  unless
+              the  listener is explicitly specified, or either the read or write qualifiers are used.  See [1mtcp[22m(7) for details.  Note that some OS-
+              es implement automatic TCP buffer tuning.
+
+       [1mthreads <integer>[0m
+              Specify the maximum size of the primary thread pool.  The default is 16; the minimum value is 2.
+
+       [1mtimelimit {<integer>|unlimited}[0m
+
+       [1mtimelimit time[.{soft|hard}]=<integer> [...][0m
+              Specify the maximum number of seconds (in real time) [1mslapd [22mwill spend answering a search request.  The default time limit  is  3600.
+              Use  [1munlimited  [22mto specify no limits.  The second format allows a fine grain setting of the time limits.  Extra args can be added on
+              the same line.  See [1mlimits [22mfor an explanation of the different flags.
+
+       [1mtool-threads <integer>[0m
+              Specify the maximum number of threads to use in tool mode.  This should not be greater than the number of CPUs in the  system.   The
+              default is 1.
+
+       [1mwritetimeout <integer>[0m
+              Specify  the  number  of  seconds  to wait before forcibly closing a connection with an outstanding write. This allows recovery from
+              various network hang conditions.  A writetimeout of 0 disables this feature.  The default is 0.
+
+[1mTLS OPTIONS[0m
+       If [1mslapd [22mis built with support for Transport Layer Security, there are more options you can specify.
+
+       [1mTLSCipherSuite <cipher-suite-spec>[0m
+              Permits configuring what ciphers will be accepted and the preference order.  <cipher-suite-spec> should be  a  cipher  specification
+              for the TLS library in use (OpenSSL, GnuTLS, or Mozilla NSS).  Example:
+
+                     [4mOpenSSL:[0m
+                            TLSCipherSuite HIGH:MEDIUM:+SSLv2
+
+                     [4mGnuTLS:[0m
+                            TLSCiphersuite SECURE256:!AES-128-CBC
+
+              To check what ciphers a given spec selects in OpenSSL, use:
+
+                   openssl ciphers -v <cipher-suite-spec>
+
+              With GnuTLS the available specs can be found in the manual page of [1mgnutls-cli[22m(1) (see the description of the option [1m--priority[22m).
+
+              In  older  versions  of GnuTLS, where gnutls-cli does not support the option --priority, you can obtain the — more limited — list of
+              ciphers by calling:
+
+                   gnutls-cli -l
+
+              When using Mozilla NSS, the OpenSSL cipher suite specifications are used and translated into the format used internally  by  Mozilla
+              NSS.   There  isn't  an  easy way to list the cipher suites from the command line.  The authoritative list is in the source code for
+              Mozilla NSS in the file sslinfo.c in the structure
+                      static const SSLCipherSuiteInfo suiteInfo[]
+
+       [1mTLSCACertificateFile <filename>[0m
+              Specifies the file that contains certificates for all of the Certificate Authorities that [1mslapd [22mwill recognize.  The certificate for
+              the  CA  that  signed the server certificate must be included among these certificates. If the signing CA was not a top-level (root)
+              CA, certificates for the entire sequence of CA's from the signing CA to the top-level CA should be  present.  Multiple  certificates
+              are simply appended to the file; the order is not significant.
+
+       [1mTLSCACertificatePath <path>[0m
+              Specifies the path of a directory that contains Certificate Authority certificates in separate individual files. Usually only one of
+              this or the TLSCACertificateFile is used. This directive is not supported when using GnuTLS.
+
+              When using Mozilla NSS, <path> may contain a Mozilla NSS cert/key database.  If <path> contains a Mozilla NSS cert/key database  and
+              CA cert files, OpenLDAP will use the cert/key database and will ignore the CA cert files.
+
+       [1mTLSCertificateFile <filename>[0m
+              Specifies the file that contains the [1mslapd [22mserver certificate.
+
+              When using Mozilla NSS, if using a cert/key database (specified with TLSCACertificatePath), TLSCertificateFile specifies the name of
+              the certificate to use:
+                   TLSCertificateFile Server-Cert
+              If using a token other than the internal built in token, specify the token name first, followed by a colon:
+                   TLSCertificateFile my hardware device:Server-Cert
+              Use certutil -L to list the certificates by name:
+                   certutil -d /path/to/certdbdir -L
+
+       [1mTLSCertificateKeyFile <filename>[0m
+              Specifies the file that contains the [1mslapd [22mserver private key that matches the certificate stored in  the  [1mTLSCertificateFile  [22mfile.
+              Currently, the private key must not be protected with a password, so it is of critical importance that it is protected carefully.
+
+              When  using  Mozilla  NSS,  TLSCertificateKeyFile  specifies  the  name  of  a  file  that contains the password for the key for the
+              certificate specified with TLSCertificateFile.  The modutil command can be used to turn off password  protection  for  the  cert/key
+              database.   For example, if TLSCACertificatePath specifes /etc/openldap/certdb as the location of the cert/key database, use modutil
+              to change the password to the empty string:
+                   modutil -dbdir /etc/openldap/certdb -changepw 'NSS Certificate DB'
+              You must have the old password, if any.  Ignore the WARNING about the running browser.  Press 'Enter' for the new password.
+
+       [1mTLSDHParamFile <filename>[0m
+              This directive specifies the file that contains parameters for Diffie-Hellman ephemeral key exchange.  This is required in order  to
+              use  a DSA certificate on the server, or an RSA certificate missing the "key encipherment" key usage.  Note that setting this option
+              may also enable Anonymous Diffie-Hellman key exchanges in  certain  non-default  cipher  suites.   Anonymous  key  exchanges  should
+              generally  be  avoided  since  they  provide no actual client or server authentication and provide no protection against man-in-the-
+              middle attacks.  You should append "!ADH" to your cipher suites to ensure that these suites are not used.  When  using  Mozilla  NSS
+              these parameters are always generated randomly so this directive is ignored.
+
+       [1mTLSProtocolMin <major>[.<minor>][0m
+              Specifies  minimum  SSL/TLS  protocol version that will be negotiated.  If the server doesn't support at least that version, the SSL
+              handshake will fail.  To require TLS 1.x or higher, set this option to 3.(x+1), e.g.,
+
+                   TLSProtocolMin 3.2
+
+              would require TLS 1.1.  Specifying a minimum that is higher than that supported by the OpenLDAP implementation  will  result  in  it
+              requiring the highest level that it does support.  This directive is ignored with GnuTLS.
+
+       [1mTLSRandFile <filename>[0m
+              Specifies  the  file  to  obtain  random bits from when /dev/[u]random is not available.  Generally set to the name of the EGD/PRNGD
+              socket.  The environment variable RANDFILE can also be used to specify the filename.  This directive  is  ignored  with  GnuTLS  and
+              Mozilla NSS.
+
+       [1mTLSVerifyClient <level>[0m
+              Specifies  what checks to perform on client certificates in an incoming TLS session, if any.  The [1m<level> [22mcan be specified as one of
+              the following keywords:
+
+              [1mnever  [22mThis is the default.  [1mslapd [22mwill not ask the client for a certificate.
+
+              [1mallow  [22mThe client certificate is requested.  If no certificate is provided, the session proceeds normally.  If a bad certificate  is
+                     provided, it will be ignored and the session proceeds normally.
+
+              [1mtry    [22mThe  client certificate is requested.  If no certificate is provided, the session proceeds normally.  If a bad certificate is
+                     provided, the session is immediately terminated.
+
+              [1mdemand | hard | true[0m
+                     These keywords are all equivalent, for compatibility reasons.  The client certificate is requested.   If  no  certificate  is
+                     provided, or a bad certificate is provided, the session is immediately terminated.
+
+                     Note  that  a  valid  client  certificate  is  required in order to use the SASL EXTERNAL authentication mechanism with a TLS
+                     session.  As such, a non-default [1mTLSVerifyClient [22msetting must be chosen to enable SASL EXTERNAL authentication.
+
+       [1mTLSCRLCheck <level>[0m
+              Specifies if the Certificate Revocation List (CRL) of the CA should be used to verify if  the  client  certificates  have  not  been
+              revoked. This requires [1mTLSCACertificatePath [22mparameter to be set. This directive is ignored with GnuTLS and Mozilla NSS.  [1m<level> [22mcan
+              be specified as one of the following keywords:
+
+              [1mnone   [22mNo CRL checks are performed
+
+              [1mpeer   [22mCheck the CRL of the peer certificate
+
+              [1mall    [22mCheck the CRL for a whole certificate chain
+
+       [1mTLSCRLFile <filename>[0m
+              Specifies a file containing a Certificate Revocation List to be used for verifying that certificates have  not  been  revoked.  This
+              directive is only valid when using GnuTLS and Mozilla NSS.
+
+[1mGENERAL BACKEND OPTIONS[0m
+       Options  in  this  section  only  apply  to  the configuration file section for the specified backend.  They are supported by every type of
+       backend.
+
+       [1mbackend <databasetype>[0m
+              Mark the beginning of a backend definition. <databasetype> should be one of  [1mbdb[22m,  [1mconfig[22m,  [1mdnssrv[22m,  [1mhdb[22m,  [1mldap[22m,  [1mldif[22m,  [1mmdb[22m,  [1mmeta[22m,
+              [1mmonitor[22m, [1mnull[22m, [1mpasswd[22m, [1mperl[22m, [1mrelay[22m, [1mshell[22m, or [1msql[22m, depending on which backend will serve the database.
+
+[1mGENERAL DATABASE OPTIONS[0m
+       Options  in  this  section  only apply to the configuration file section for the database in which they are defined.  They are supported by
+       every type of backend.  Note that the [1mdatabase [22mand at least one [1msuffix [22moption are mandatory for each database.
+
+       [1mdatabase <databasetype>[0m
+              Mark the beginning of a new database instance definition. <databasetype> should be one of [1mbdb[22m, [1mconfig[22m, [1mdnssrv[22m, [1mhdb[22m, [1mldap[22m, [1mldif[22m, [1mmdb[22m,
+              [1mmeta[22m, [1mmonitor[22m, [1mnull[22m, [1mpasswd[22m, [1mperl[22m, [1mrelay[22m, [1mshell[22m, or [1msql[22m, depending on which backend will serve the database.
+
+              LDAP  operations,  even  subtree searches, normally access only one database.  That can be changed by gluing databases together with
+              the [1msubordinate [22mkeyword.  Access controls and some overlays can also involve multiple databases.
+
+       [1madd_content_acl on | off[0m
+              Controls whether Add operations will perform ACL checks on the content of the entry being added. This check is off by  default.  See
+              the [1mslapd.access[22m(5) manual page for more details on ACL requirements for Add operations.
+
+       [1mextra_attrs <attrlist>[0m
+              Lists  what  attributes  need  to be added to search requests.  Local storage backends return the entire entry to the frontend.  The
+              frontend takes care of only returning the requested attributes that are allowed by ACLs.  However, features like access checking and
+              so  may  need  specific  attributes  that  are not automatically returned by remote storage backends, like proxy backends and so on.
+              [1m<attrlist> [22mis a list of attributes that are needed for internal purposes and thus  always  need  to  be  collected,  even  when  not
+              explicitly requested by clients.
+
+       [1mhidden on | off[0m
+              Controls  whether  the  database  will  be  used  to  answer queries. A database that is hidden will never be selected to answer any
+              queries, and any suffix configured on the database will be ignored in checks for conflicts with other databases. By default,  hidden
+              is off.
+
+       [1mlastmod on | off[0m
+              Controls  whether [1mslapd [22mwill automatically maintain the modifiersName, modifyTimestamp, creatorsName, and createTimestamp attributes
+              for entries. It also controls the entryCSN and entryUUID attributes, which are needed by the syncrepl provider. By default,  lastmod
+              is on.
+
+       [1mlimits <selector> <limit> [<limit> [...]][0m
+              Specify time and size limits based on the operation's initiator or base DN.  The argument [1m<selector> [22mcan be any of
+
+                     anonymous | users | [<dnspec>=]<pattern> | group[/oc[/at]]=<pattern>
+
+              with
+
+                     <dnspec> ::= dn[.<type>][.<style>]
+
+                     <type>  ::= self | this
+
+                     <style> ::= exact | base | onelevel | subtree | children | regex | anonymous
+
+              DN type [1mself [22mis the default and means the bound user, while [1mthis [22mmeans the base DN of the operation.  The term [1manonymous [22mmatches all
+              unauthenticated clients.  The term [1musers [22mmatches all authenticated  clients;  otherwise  an  [1mexact  [22mdn  pattern  is  assumed  unless
+              otherwise  specified  by qualifying the (optional) key string [1mdn [22mwith [1mexact [22mor [1mbase [22m(which are synonyms), to require an exact match;
+              with [1monelevel[22m, to require exactly one level of depth match; with [1msubtree[22m, to allow any level of depth  match,  including  the  exact
+              match;  with  [1mchildren[22m,  to  allow  any level of depth match, not including the exact match; [1mregex [22mexplicitly requires the (default)
+              match based on POSIX (''extended'') regular expression pattern.  Finally, [1manonymous [22mmatches unbound operations; the [1mpattern [22mfield is
+              ignored.   The  same  behavior  is obtained by using the [1manonymous [22mform of the [1m<selector> [22mclause.  The term [1mgroup[22m, with the optional
+              objectClass [1moc [22mand attributeType [1mat [22mfields, followed by [1mpattern[22m, sets the limits for any DN listed in the values of the [1mat [22mattribute
+              (default [1mmember[22m) of the [1moc [22mgroup objectClass (default [1mgroupOfNames[22m) whose DN exactly matches [1mpattern[22m.
+
+              The currently supported limits are [1msize [22mand [1mtime[22m.
+
+              The  syntax  for  time  limits  is [1mtime[.{soft|hard}]=<integer>[22m, where [4minteger[24m is the number of seconds slapd will spend answering a
+              search request.  If no time limit is explicitly requested by the client, the [1msoft [22mlimit is used; if the requested time limit exceeds
+              the  [1mhard  [22mlimit,  the  value of the limit is used instead.  If the [1mhard [22mlimit is set to the keyword [4msoft[24m, the soft limit is used in
+              either case; if it is set to the keyword [4munlimited[24m, no hard limit is enforced.  Explicit requests for time limits smaller  or  equal
+              to  the [1mhard [22mlimit are honored.  If no limit specifier is set, the value is assigned to the [1msoft [22mlimit, and the [1mhard [22mlimit is set to
+              [4msoft[24m, to preserve the original behavior.
+
+              The syntax for size limits is [1msize[.{soft|hard|unchecked}]=<integer>[22m, where [4minteger[24m is the maximum  number  of  entries  slapd  will
+              return answering a search request.  If no size limit is explicitly requested by the client, the [1msoft [22mlimit is used; if the requested
+              size limit exceeds the [1mhard [22mlimit, the value of the limit is used instead.  If the [1mhard [22mlimit is set to the keyword [4msoft[24m,  the  soft
+              limit  is  used in either case; if it is set to the keyword [4munlimited[24m, no hard limit is enforced.  Explicit requests for size limits
+              smaller or equal to the [1mhard [22mlimit are honored.  The [1munchecked [22mspecifier sets a limit on the number of candidates a  search  request
+              is  allowed  to  examine.   The rationale behind it is that searches for non-properly indexed attributes may result in large sets of
+              candidates, which must be examined by [1mslapd[22m(8) to determine whether they match the  search  filter  or  not.   The  [1munchecked  [22mlimit
+              provides  a  means to drop such operations before they are even started.  If the selected candidates exceed the [1munchecked [22mlimit, the
+              search will abort with [4mUnwilling[24m [4mto[24m [4mperform[24m.  If it is set to the keyword [4munlimited[24m, no limit is applied (the default).   If  it  is
+              set  to  [4mdisabled[24m, the search is not even performed; this can be used to disallow searches for a specific set of users.  If no limit
+              specifier is set, the value is assigned to the [1msoft [22mlimit, and the [1mhard [22mlimit is set to [4msoft[24m, to preserve the original behavior.
+
+              In case of no match, the global limits are used.  The default values are the same as for [1msizelimit [22mand [1mtimelimit[22m; no limit is set on
+              [1munchecked[22m.
+
+              If  [1mpagedResults  [22mcontrol  is  requested,  the  [1mhard  [22msize  limit is used by default, because the request of a specific page size is
+              considered an explicit request for a limitation on the number of entries to be returned.  However, the size  limit  applies  to  the
+              total  count of entries returned within the search, and not to a single page.  Additional size limits may be enforced; the syntax is
+              [1msize.pr={<integer>|noEstimate|unlimited}[22m, where [4minteger[24m is the max page size if no explicit limit is  set;  the  keyword  [4mnoEstimate[0m
+              inhibits  the  server  from  returning  an  estimate  of  the  total  number  of  entries  that might be returned (note: the current
+              implementation does not return any estimate).  The keyword [4munlimited[24m indicates that no limit is applied to the pagedResults  control
+              page size.  The syntax [1msize.prtotal={<integer>|unlimited|disabled} [22mallows one to set a limit on the total number of entries that the
+              pagedResults control will return.  By default it is set to the [1mhard [22mlimit.  When set, [4minteger[24m is the max number of entries that  the
+              whole search with pagedResults control can return.  Use [4munlimited[24m to allow unlimited number of entries to be returned, e.g. to allow
+              the use of the pagedResults control as a means to circumvent size limitations on regular searches; the keyword [4mdisabled[24m disables the
+              control,  i.e.  no  paged  results can be returned.  Note that the total number of entries returned when the pagedResults control is
+              requested cannot exceed the [1mhard [22msize limit of regular searches unless extended by the [1mprtotal [22mswitch.
+
+              The [1mlimits [22mstatement is typically used to let an unlimited number of entries be returned by searches  performed  with  the  identity
+              used  by  the consumer for synchronization purposes by means of the RFC 4533 LDAP Content Synchronization protocol (see [1msyncrepl [22mfor
+              details).
+
+       [1mmaxderefdepth <depth>[0m
+              Specifies the maximum number of aliases to dereference when trying to resolve an entry, used to  avoid  infinite  alias  loops.  The
+              default is 15.
+
+       [1mmirrormode on | off[0m
+              This  option  puts  a replica database into "mirror" mode.  Update operations will be accepted from any user, not just the updatedn.
+              The database must already be configured as a syncrepl consumer before this keyword may be set. This mode also  requires  a  [1mserverID[0m
+              (see above) to be configured.  By default, mirrormode is off.
+
+       [1mmonitoring on | off[0m
+              This  option  enables  database-specific  monitoring  in  the entry related to the current database in the "cn=Databases,cn=Monitor"
+              subtree of the monitor database, if the monitor database is enabled.   Currently,  only  the  BDB  and  the  HDB  databases  provide
+              database-specific monitoring.  The default depends on the backend type.
+
+       [1moverlay <overlay-name>[0m
+              Add  the specified overlay to this database. An overlay is a piece of code that intercepts database operations in order to extend or
+              change them. Overlays are pushed onto a stack over the database, and so they will execute in the reverse of the order in which  they
+              were  configured  and the database itself will receive control last of all. See the [1mslapd.overlays[22m(5) manual page for an overview of
+              the available overlays.  Note that all of the database's regular settings should be configured before any overlay settings.
+
+       [1mreadonly on | off[0m
+              This option puts the database into "read-only" mode.  Any attempts to modify the database will  return  an  "unwilling  to  perform"
+              error.  By default, readonly is off.
+
+       [1mrestrict <oplist>[0m
+              Specify  a  whitespace  separated  list of operations that are restricted.  If defined inside a database specification, restrictions
+              apply only to that database, otherwise they are global.  Operations can be any of  [1madd[22m,  [1mbind[22m,  [1mcompare[22m,  [1mdelete[22m,  [1mextended[=<OID>][22m,
+              [1mmodify[22m,  [1mrename[22m,  [1msearch[22m,  or  the special pseudo-operations [1mread [22mand [1mwrite[22m, which respectively summarize read and write operations.
+              The use of [4mrestrict[24m [4mwrite[24m is equivalent to [4mreadonly[24m [4mon[24m (see above).  The [1mextended [22mkeyword allows one to  indicate  the  OID  of  the
+              specific operation to be restricted.
+
+       [1mrootdn <dn>[0m
+              Specify  the  distinguished  name  that is not subject to access control or administrative limit restrictions for operations on this
+              database.  This DN may or may not be associated with an entry.  An empty root DN (the default) specifies no root  access  is  to  be
+              granted.   It  is  recommended that the rootdn only be specified when needed (such as when initially populating a database).  If the
+              rootdn is within a namingContext (suffix) of the database, a simple bind password may also be provided using the  [1mrootpw  [22mdirective.
+              Many optional features, including syncrepl, require the rootdn to be defined for the database.
+
+       [1mrootpw <password>[0m
+              Specify a password (or hash of the password) for the rootdn.  The password can only be set if the rootdn is within the namingContext
+              (suffix) of the database.  This option accepts all RFC 2307 userPassword formats known to the server (see [1mpassword-hash [22mdescription)
+              as  well  as  cleartext.   [1mslappasswd[22m(8)  may  be  used  to  generate a hash of a password.  Cleartext and [1m{CRYPT} [22mpasswords are not
+              recommended.  If empty (the default), authentication of the root DN is by other means (e.g. SASL).  Use of SASL is encouraged.
+
+       [1msuffix <dn suffix>[0m
+              Specify the DN suffix of queries that will be passed to this backend database.  Multiple suffix lines can be given and at least  one
+              is required for each database definition.
+
+              If  the  suffix of one database is "inside" that of another, the database with the inner suffix must come first in the configuration
+              file.  You may also want to glue such databases together with the [1msubordinate [22mkeyword.
+
+       [1msubordinate [advertise][0m
+              Specify that the current backend database is a subordinate of another backend database. A subordinate  database may  have  only  one
+              suffix.  This  option  may be used to glue multiple databases into a single namingContext.  If the suffix of the current database is
+              within the namingContext of a superior database, searches against the superior database will be propagated  to  the  subordinate  as
+              well.  All of the databases associated with a single namingContext should have identical rootdns.  Behavior of other LDAP operations
+              is unaffected by this setting. In particular, it is not possible to use moddn to move an  entry  from  one  subordinate  to  another
+              subordinate within the namingContext.
+
+              If  the  optional  [1madvertise  [22mflag is supplied, the naming context of this database is advertised in the root DSE. The default is to
+              hide this database context, so that only the superior context is visible.
+
+              If the slap tools [1mslapcat[22m(8), [1mslapadd[22m(8), or [1mslapindex[22m(8) are used on the superior database, any  glued  subordinates  that  support
+              these tools are opened as well.
+
+              Databases  that  are  glued  together  should usually be configured with the same indices (assuming they support indexing), even for
+              attributes that only exist in some of these databases. In general, all of the glued databases should be configured as  similarly  as
+              possible, since the intent is to provide the appearance of a single directory.
+
+              Note  that  the  [4msubordinate[24m functionality is implemented internally by the [4mglue[24m overlay and as such its behavior will interact with
+              other overlays in use. By default, the glue overlay is automatically configured as the last overlay on  the  superior  backend.  Its
+              position  on  the  backend  can be explicitly configured by setting an [1moverlay glue [22mdirective at the desired position. This explicit
+              configuration is necessary e.g.  when using the [4msyncprov[24m overlay, which needs to follow [4mglue[24m in order to work over all of the  glued
+              databases. E.g.
+                   database bdb
+                   suffix dc=example,dc=com
+                   ...
+                   overlay glue
+                   overlay syncprov
+
+       [1msync_use_subentry[0m
+              Store  the syncrepl contextCSN in a subentry instead of the context entry of the database. The subentry's RDN will be "cn=ldapsync".
+              By default the contextCSN is stored in the context entry.
+
+       [1msyncrepl    rid=<replica    ID>    provider=ldap[s]://<hostname>[:port]    searchbase=<base    DN>     [type=refreshOnly|refreshAndPersist][0m
+              [1m[interval=dd:hh:mm:ss]  [retry=[<retry  interval>  <#  of retries>]+] [filter=<filter str>] [scope=sub|one|base|subord] [attrs=<attr[0m
+              [1mlist>] [exattrs=<attr list>] [attrsonly] [sizelimit=<limit>] [timelimit=<limit>] [schemachecking=on|off] [network-timeout=<seconds>][0m
+              [1m[timeout=<seconds>]    [bindmethod=simple|sasl]    [binddn=<dn>]    [saslmech=<mech>]    [authcid=<identity>]   [authzid=<identity>][0m
+              [1m[credentials=<passwd>]  [realm=<realm>]   [secprops=<properties>]   [keepalive=<idle>:<probes>:<interval>]   [starttls=yes|critical][0m
+              [1m[tls_cert=<file>]      [tls_key=<file>]      [tls_cacert=<file>]     [tls_cacertdir=<path>]     [tls_reqcert=never|allow|try|demand][0m
+              [1m[tls_cipher_suite=<ciphers>]    [tls_crlcheck=none|peer|all]    [tls_protocol_min=<major>[.<minor>]]    [suffixmassage=<real    DN>][0m
+              [1m[logbase=<base DN>] [logfilter=<filter str>] [syncdata=default|accesslog|changelog][0m
+              Specify the current database as a replica which is kept up-to-date with the master content by establishing the current [1mslapd[22m(8) as a
+              replication consumer site running a [1msyncrepl [22mreplication engine.  The replica content is kept synchronized  to  the  master  content
+              using  the  LDAP Content Synchronization protocol. Refer to the "OpenLDAP Administrator's Guide" for detailed information on setting
+              up a replicated [1mslapd [22mdirectory service using the [1msyncrepl [22mreplication engine.
+
+              [1mrid [22midentifies the current [1msyncrepl [22mdirective within the replication consumer site.  It is a non-negative integer not  greater  than
+              999 (limited to three decimal digits).
+
+              [1mprovider  [22mspecifies the replication provider site containing the master content as an LDAP URI. If <port> is not given, the standard
+              LDAP port number (389 or 636) is used.
+
+              The content of the [1msyncrepl [22mreplica is defined using a search specification as its result set. The consumer [1mslapd [22mwill  send  search
+              requests  to  the provider [1mslapd [22maccording to the search specification. The search specification includes [1msearchbase[22m, [1mscope[22m, [1mfilter[22m,
+              [1mattrs[22m, [1mattrsonly[22m, [1msizelimit[22m, and [1mtimelimit [22mparameters as in the normal search specification.  The [1mscope [22mdefaults to [1msub[22m, the  [1mfilter[0m
+              defaults  to  [1m(objectclass=*)[22m,  while  there  is  no  default  [1msearchbase[22m.  The  [1mattrs [22mlist defaults to [1m"*,+" [22mto return all user and
+              operational attributes, and [1mattrsonly [22mis unset by default.  The  [1msizelimit  [22mand  [1mtimelimit  [22monly  accept  "unlimited"  and  positive
+              integers,  and  both  default  to "unlimited".  The [1msizelimit [22mand [1mtimelimit [22mparameters define a consumer requested limitation on the
+              number of entries that can be returned by the LDAP Content Synchronization operation; as such, it is intended to  implement  partial
+              replication  based  on the size of the replicated database and on the time required by the synchronization.  Note, however, that any
+              provider-side limits for the replication identity will be enforced by the provider regardless of the limits requested  by  the  LDAP
+              Content  Synchronization operation, much like for any other search operation.  [1mexattrs [22moption may also be used to specify attributes
+              that should be omitted from incoming entries.  The [1mscope [22mdefaults to [1msub[22m, the [1mfilter [22mdefaults to [1m(objectclass=*)[22m, and  there  is  no
+              default  [1msearchbase[22m.  The  [1mattrs [22mlist defaults to [1m"*,+" [22mto return all user and operational attributes, and [1mattrsonly [22mand [1mexattrs [22mare
+              unset by default.  The [1msizelimit [22mand [1mtimelimit [22monly accept "unlimited" and positive  integers,  and  both  default  to  "unlimited".
+              Note,  however, that any provider-side limits for the replication identity will be enforced by the provider regardless of the limits
+              requested by the LDAP Content Synchronization operation, much like for any other search operation.
+
+              The LDAP Content Synchronization protocol has two operation types.  In the [1mrefreshOnly [22moperation, the  next  synchronization  search
+              operation  is  periodically  rescheduled  at  an  interval  time  (specified  by  [1minterval  [22mparameter;  1 day by default) after each
+              synchronization operation finishes.  In the [1mrefreshAndPersist [22moperation, a synchronization search remains persistent in the provider
+              slapd.   Further  updates to the master replica will generate [1msearchResultEntry [22mto the consumer slapd as the search responses to the
+              persistent synchronization search.  If the initial search fails due to an  error,  the  next  synchronization  search  operation  is
+              periodically rescheduled at an interval time (specified by [1minterval [22mparameter; 1 day by default)
+
+              If  an  error  occurs during replication, the consumer will attempt to reconnect according to the [1mretry [22mparameter which is a list of
+              the <retry interval> and <# of retries> pairs.  For example, retry="60 10 300 3" lets the consumer retry every 60  seconds  for  the
+              first  10  times  and  then  retry  every  300  seconds  for  the next 3 times before stop retrying. The `+' in <# of retries> means
+              indefinite number of retries until success.  If no [1mretry [22mwas specified, by default syncrepl retries every hour forever.
+
+              The schema checking can be enforced at the LDAP Sync consumer site by turning on the [1mschemachecking [22mparameter. The default  is  [1moff[22m.
+              Schema  checking [1mon [22mmeans that replicated entries must have a structural objectClass, must obey to objectClass requirements in terms
+              of required/allowed attributes, and that naming attributes and distinguished values must  be  present.   As  a  consequence,  schema
+              checking should be [1moff [22mwhen partial replication is used.
+
+              The  [1mnetwork-timeout  [22mparameter  sets  how  long  the  consumer  will wait to establish a network connection to the provider. Once a
+              connection is established, the [1mtimeout [22mparameter determines how long the  consumer  will  wait  for  the  initial  Bind  request  to
+              complete. The defaults for these parameters come from [1mldap.conf[22m(5).
+
+              A [1mbindmethod [22mof [1msimple [22mrequires the options [1mbinddn [22mand [1mcredentials [22mand should only be used when adequate security services (e.g. TLS
+              or IPSEC) are in place.  [1mREMEMBER: simple bind credentials must be in cleartext!  [22mA [1mbindmethod [22mof [1msasl [22mrequires the option [1msaslmech.[0m
+              Depending  on  the  mechanism,  an  authentication  identity and/or credentials can be specified using [1mauthcid [22mand [1mcredentials.  [22mThe
+              [1mauthzid [22mparameter may be used to specify an authorization identity.  Specific security properties (as with the [1msasl-secprops [22mkeyword
+              above) for a SASL bind can be set with the [1msecprops [22moption. A non default SASL realm can be set with the [1mrealm [22moption.  The identity
+              used for synchronization by the consumer should be allowed to receive an unlimited  number  of  entries  in  response  to  a  search
+              request.   The  provider,  other  than  allow authentication of the syncrepl identity, should grant that identity appropriate access
+              privileges to the data that is being replicated ([1maccess [22mdirective), and appropriate time and size limits.  This can be  accomplished
+              by  either allowing unlimited [1msizelimit [22mand [1mtimelimit[22m, or by setting an appropriate [1mlimits [22mstatement in the consumer's configuration
+              (see [1msizelimit [22mand [1mlimits [22mfor details).
+
+              The [1mkeepalive [22mparameter sets the values of [4midle[24m, [4mprobes[24m, and [4minterval[24m used to check whether a socket is alive; [4midle[24m is the number of
+              seconds  a  connection  needs  to  remain idle before TCP starts sending keepalive probes; [4mprobes[24m is the maximum number of keepalive
+              probes TCP should send before dropping the connection; [4minterval[24m is interval in seconds between individual  keepalive  probes.   Only
+              some  systems  support the customization of these values; the [1mkeepalive [22mparameter is ignored otherwise, and system-wide settings are
+              used.
+
+              The [1mstarttls [22mparameter specifies use of the StartTLS extended operation to establish a TLS session before Binding to  the  provider.
+              If  the  [1mcritical  [22margument  is  supplied, the session will be aborted if the StartTLS request fails. Otherwise the syncrepl session
+              continues without TLS. The tls_reqcert setting defaults to "demand" and the other TLS settings default to the same as the main slapd
+              TLS settings.
+
+              The  [1msuffixmassage  [22mparameter  allows  the  consumer  to pull entries from a remote directory whose DN suffix differs from the local
+              directory. The portion of the remote entries' DNs that matches the [4msearchbase[24m will be replaced with the suffixmassage DN.
+
+              Rather than replicating whole entries, the consumer can query logs of data modifications. This mode of operation is referred  to  as
+              [4mdelta[24m [4msyncrepl[24m. In addition to the above parameters, the [1mlogbase [22mand [1mlogfilter [22mparameters must be set appropriately for the log that
+              will be used. The [1msyncdata [22mparameter must be set to either "accesslog" if the log conforms to the [1mslapo-accesslog[22m(5) log format,  or
+              "changelog"  if the log conforms to the obsolete [4mchangelog[24m format. If the [1msyncdata [22mparameter is omitted or set to "default" then the
+              log parameters are ignored.
+
+       [1mupdatedn <dn>[0m
+              This option is only applicable in a slave database.  It specifies the DN permitted  to  update  (subject  to  access  controls)  the
+              replica.   It  is  only  needed in certain push-mode replication scenarios.  Generally, this DN [4mshould[24m [4mnot[24m be the same as the [1mrootdn[0m
+              used at the master.
+
+       [1mupdateref <url>[0m
+              Specify the referral to pass back when [1mslapd[22m(8) is asked to modify a replicated local database.  If specified multiple  times,  each
+              url is provided.
+
+[1mDATABASE-SPECIFIC OPTIONS[0m
+       Each  database  may  allow  specific  configuration  options;  they  are  documented  separately  in  the  backends'  manual pages. See the
+       [1mslapd.backends[22m(5) manual page for an overview of available backends.
+
+[1mEXAMPLES[0m
+       Here is a short example of a configuration file:
+
+              include   /etc/openldap/schema/core.schema
+              pidfile   /var/run/slapd.pid
+
+              # Subtypes of "name" (e.g. "cn" and "ou") with the
+              # option ";x-hidden" can be searched for/compared,
+              # but are not shown.  See [1mslapd.access[22m(5).
+              attributeoptions x-hidden lang-
+              access to attrs=name;x-hidden by * =cs
+
+              # Protect passwords.  See [1mslapd.access[22m(5).
+              access    to attrs=userPassword  by * auth
+              # Read access to other attributes and entries.
+              access    to *  by * read
+
+              database  bdb
+              suffix    "dc=our-domain,dc=com"
+              # The database directory MUST exist prior to
+              # running slapd AND should only be accessible
+              # by the slapd/tools. Mode 0700 recommended.
+              directory /var/openldap-data
+              # Indices to maintain
+              index     objectClass  eq
+              index     cn,sn,mail   pres,eq,approx,sub
+
+              # We serve small clients that do not handle referrals,
+              # so handle remote lookups on their behalf.
+              database  ldap
+              suffix    ""
+              uri       ldap://ldap.some-server.com/
+              lastmod   off
+
+       "OpenLDAP Administrator's Guide" contains a longer annotated example of a configuration file.   The  original  /etc/openldap/slapd.conf  is
+       another example.
+
+[1mFILES[0m
+       /etc/openldap/slapd.conf
+              default slapd configuration file
+
+[1mSEE ALSO[0m
+       [1mldap[22m(3),  [1mgnutls-cli[22m(1),  [1mslapd-config[22m(5),  [1mslapd.access[22m(5),  [1mslapd.backends[22m(5),  [1mslapd.overlays[22m(5), [1mslapd.plugin[22m(5), [1mslapd[22m(8), [1mslapacl[22m(8),
+       [1mslapadd[22m(8), [1mslapauth[22m(8), [1mslapcat[22m(8), [1mslapdn[22m(8), [1mslapindex[22m(8), [1mslappasswd[22m(8), [1mslaptest[22m(8).
+
+       "OpenLDAP Administrator's Guide" (http://www.OpenLDAP.org/doc/admin/)
+
+[1mACKNOWLEDGEMENTS[0m
+       [1mOpenLDAP Software [22mis developed and maintained by The OpenLDAP Project <http://www.openldap.org/>.  [1mOpenLDAP Software [22mis  derived  from  the
+       University of Michigan LDAP 3.3 Release.
+
+OpenLDAP 2.4.45                                                     2017/06/01                                                       SLAPD.CONF(5)

@@ -408,7 +408,10 @@ Autenticació mitajançant tiquets
 
 ## SSF
 
+
 Determina el grau de protecció de la base de dades.
+
+	0 cap	1 integritat 	1 > cifratge o mecanisme
 
 
 	ssf : Defineix les ssf en general 									
