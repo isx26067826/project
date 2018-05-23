@@ -43,5 +43,37 @@ docker run --name client -h client.edt.org --net=ssf  --add-host=skerberos.edt.o
 
 ```
 
+Intenten fer un modificació amb un mode simple sense cap mena de protecció i ens donara error
+
+```bash
+
+ldapmodify -x -D "uid=roger,o=becaris,ou=professors,dc=edt,dc=org" -w roger -f modify.ldif
+
+```
+
+El metode GSSAPI té un SSF de 256 el mateix nombre que la directiva update_ssf
+
+```bash
+
+kinit roger/professors.becaris
+Password for roger/professors.becaris@EDT.ORG: 
+
+
+```
+
+Modifiquen amb el metode GSSAPI
+
+```bash
+
+ldapmodify -Y GSSAPI -f modify.ldif 
+
+SASL/GSSAPI authentication started
+SASL username: roger/professors.becaris@EDT.ORG
+SASL SSF: 256
+SASL data security layer installed.
+modifying entry "uid=roger,o=becaris,ou=professors,dc=edt,dc=org"
+
+
+```
 
 [Tornar al principi](https://github.com/isx26067826/project/blob/master/README.md)

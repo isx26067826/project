@@ -16,8 +16,7 @@ RUN cp /opt/docker/ldapserver* /etc/openldap/certs/
 # per que el usuari ldap per que el servei slapd es pugui encendre.
 RUN /opt/docker/createDB.sh
 # El container encendra amb el servidor slapd en back-ground amb l'execució del script startup.sh
-#CMD ["/opt/docker/startup.sh"]
-CMD ["/bin/bash"]
+CMD ["/opt/docker/startup.sh"]
 # Exposar el ports per que es puguin fer consulta aquest dos ports
 EXPOSE 389 636
                                      
