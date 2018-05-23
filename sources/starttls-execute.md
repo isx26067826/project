@@ -49,7 +49,7 @@ si no pot fer la negociació seguir el model normal. Pero quan apliquen la segon
 
 ```bash
 
-[root@client docker]# ldapsearch -x -b 'dc=edt,dc=org' -LLL -s base -ZZ
+ldapsearch -x -b 'dc=edt,dc=org' -LLL -s base -ZZ
 dn: dc=edt,dc=org
 dc: edt
 description: Escola del treball de Barcelona

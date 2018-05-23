@@ -3,12 +3,13 @@
   <meta charset="utf-8">
   <meta name="generator" content="pandoc">
   <title></title>
-  <style type="text/css">code{white-space: pre-wrap;}</style>
+  <style type="text/css">code{white-space: pre;}</style>
   <link rel="stylesheet" href="propi_style.css">
 </head>
 <body>
-<section id="ldap-gssapi" class="titleslide slide level1"><h1>LDAP GSSAPI</h1></section><section id="openldap" class="slide level2">
-<h2>Openldap</h2>
+<section id="ldap-gssapi" class="titleslide slide level1"><h1>LDAP GSSAPI</h1></section><section class="slide level2">
+
+<h3 id="openldap">Openldap</h3>
 <p>Es una implementació del protocol LDAP per gestionar base de dades en forma de directoris.</p>
 <pre><code>dn: uid=roger,o=becaris,ou=professors,dc=edt,dc=org
 objectclass: posixAccount
@@ -25,8 +26,9 @@ uidNumber: 11032
 gidNumber: 651
 homeDirectory: /tmp/home/becaris/roger
 userPassword: {SSHA}p4S7d2VFW+36/VGklWGMxPUuMxpkaFxV</code></pre>
-</section><section id="fitxers-de-configuració-servidor" class="slide level2">
-<h2>Fitxers de configuració Servidor</h2>
+</section><section class="slide level2">
+
+<h3 id="fitxers-de-configuració-servidor">Fitxers de configuració Servidor</h3>
 <pre><code>include     /etc/openldap/schema/corba.schema
 include     /etc/openldap/schema/core.schema
 include     /etc/openldap/schema/cosine.schema
@@ -55,8 +57,9 @@ index objectClass eq,pres
 access to *
     by self write
 by * read </code></pre>
-</section><section id="fitxers-de-configuració-client" class="slide level2">
-<h2>Fitxers de configuració Client</h2>
+</section><section class="slide level2">
+
+<h3 id="fitxers-de-configuració-client">Fitxers de configuració Client</h3>
 <pre><code>#
 # LDAP Defaults
 #
@@ -79,7 +82,7 @@ SASL_NOCANON    on</code></pre>
 
 slapadd -F /etc/openldap/slapd.d/ -l dataDBuid.ldif</code></pre>
 </section><section id="problema" class="slide level2">
-<h2>Problema</h2>
+<h1>Problema</h1>
 <pre><code>ldapwhoami -x -D &quot;uid=pere,ou=alumnes,dc=edt,dc=org&quot; -w plainpasswordinnetwork
 
 ldapsearch -x -b &#39;dc=edt,dc=org&#39; </code></pre>
@@ -87,27 +90,31 @@ ldapsearch -x -b &#39;dc=edt,dc=org&#39; </code></pre>
 <img src="wireshark-simple.jpg" />
 </figure>
 <p>Autenticació Simple</p>
-</section><section id="diferents-metodes-de-protecció" class="slide level2">
-<h2>Diferents metodes de protecció</h2>
+</section><section class="slide level2">
+
+<h3 id="diferents-metodes-de-protecció">Diferents metodes de protecció</h3>
 <ul class="incremental">
 <li><p>StartTLS</p></li>
 <li><p>EXTERNAL</p></li>
 <li><p>GSSAPI</p></li>
 <li><p>SSF</p></li>
 </ul>
-</section><section id="es-posible-encriptar-les-comunicacions-del-ldap" class="slide level2">
-<h2>Es posible encriptar les comunicacions del ldap?</h2>
+</section><section class="slide level2">
+
+<h3 id="es-posible-encriptar-les-comunicacions-del-ldap">Es posible encriptar les comunicacions del ldap?</h3>
 <p>StartTLS</p>
 <p>· Autenticitat</p>
 <p>· Integritat</p>
 <p>Creació de certificats</p>
-<pre><code>openssl req -new -x509 -nodes -out /etc/openldap/cacrt.pem -days 365 -keyout /etc/openldap/cakey.pem
+<pre><code>openssl req -new -x509 -nodes -out cacrt.pem -days 365 -keyout cakey.pem
  
-openssl req -new -newkey rsa:2048 -keyout /etc/openldap/certs/ldapserverkey.pem -nodes -out /etc/openldap/certs/ldapservercsr.pem
+openssl req -new -newkey rsa:2048 -keyout ldapserverkey.pem -nodes
+ -out ldapservercsr.pem
 
-openssl x509 -CA /etc/openldap/certs/cacrt.pem -CAkey /etc/openldap/certs/cakey.pem -req -in /etc/openldap/certs/ldapservercsr.pem -CAcreateserial -out /etc/openldap/certs/ldapservercert.pem</code></pre>
+openssl x509 -CA cacrt.pem -CAkey cakey.pem -req -in ldapservercsr.pem
+ -CAcreateserial -out ldapservercert.pem</code></pre>
 </section><section id="fitxers-de-configuració" class="slide level2">
-<h2>Fitxers de configuració</h2>
+<h1>Fitxers de configuració</h1>
 <p>Servidor</p>
 <pre><code>#SSL certificate file paths
 TLSCACertificateFile /etc/openldap/certs/cacrt.pem
@@ -121,41 +128,55 @@ TLSVerifyClient never</code></pre>
 TLS_CACERTDIR   /etc/openldap/certs/
 TLS_CACERT      /etc/openldap/certs/cacrt.pem</code></pre>
 </section><section id="implementació-starttls" class="slide level2">
-<h2>Implementació StartTLS</h2>
+<h1>Implementació StartTLS</h1>
 <p>ldapwhoami -Z o ldapwhoami -ZZ ?</p>
 <figure>
 <img src="starttls.jpg" />
 </figure>
-</section><section id="es-posible-que-les-informació-per-autenticar-se-no-viatgen-per-la-xarxa" class="slide level2">
-<h2>Es posible que les informació per autenticar-se no viatgen per la xarxa?</h2>
+</section><section class="slide level2">
+
+<h3 id="es-posible-que-linformació-per-autenticar-se-no-viatgen-per-la-xarxa">Es posible que l'informació per autenticar-se no viatgen per la xarxa?</h3>
 <p>El primer de aquesta clase de metodes es:</p>
 <p>· EXTERNAL</p>
 <p>Amb aquest metode no cal proporcionar ni DN (usuari) ni userPassword (password)</p>
 <figure>
 <img src="ssl.jpg" />
 </figure>
-</section><section id="external-server" class="slide level2">
-<h2>External Server</h2>
-<p>Creació de certificats</p>
+</section><section class="slide level2">
+
+<h3 id="external-server">External Server</h3>
 <pre><code>openssl req -new -newkey rsa:2048 -keyout martakey.pem -nodes -out martacsr.pem
 
-openssl x509 -CA /etc/openldap/certs/cacrt.pem  -CAkey /etc/openldap/certs/cakey.pem  -req -in martacsr.pem  -CAcreateserial -out martacert.pem</code></pre>
-<p>Server</p>
-<pre><code>#SSL certificate file paths
+openssl x509 -CA /etc/openldap/certs/cacrt.pem  -CAkey /etc/openldap/certs/cakey.pem  -req -in martacsr.pem 
+ -CAcreateserial -out martacert.pem
+
+Server
+
+#SSL certificate file paths
 TLSCACertificateFile /etc/openldap/certs/ca.cert
 TLSCertificateFile /etc/openldap/certs/ldapserver.pem
 TLSCertificateKeyFile /etc/openldap/certs/ldap.key
 TLSCipherSuite HIGH:MEDIUM:+SSLv2
 TLSVerifyClient demand
 
-authz-regexp &quot;^email=([^,]+),cn=([^,]+),ou=alumnes.*,c=ES$&quot; &quot;uid=$2,ou=alumnes,dc=edt,dc=org&quot;
+authz-regexp &quot;^email=([^,]+),cn=([^,]+),ou=alumnes.*,c=ES$&quot; 
+&quot;uid=$2,ou=alumnes,dc=edt,dc=org&quot;
+
 authz-regexp &quot;^email=([^,]+),cn=manager.*,c=ES$&quot; &quot;cn=Manager,dc=edt,dc=org&quot;
-authz-regexp &quot;^email=([^,]+),cn=([^,]+),ou=professors,o=tarda.*,c=ES$&quot; &quot;uid=$2,o=tarda,ou=professors,dc=edt,dc=org&quot;
-authz-regexp &quot;^email=([^,]+),cn=([^,]+),ou=professors,o=mati.*,c=ES$&quot; &quot;uid=$2,o=mati,ou=professors,dc=edt,dc=org&quot;
-authz-regexp &quot;^email=([^,]+),cn=([^,]+),ou=professors,o=caps.*,c=ES$&quot; &quot;uid=$2,o=caps,ou=professors,dc=edt,dc=org&quot;
-authz-regexp &quot;^email=([^,]+),cn=([^,]+),ou=professors,o=becaris.*,c=ES$&quot; &quot;uid=$2,o=becaris,ou=professors,dc=edt,dc=org&quot;</code></pre>
-</section><section id="external-client" class="slide level2">
-<h2>External Client</h2>
+authz-regexp &quot;^email=([^,]+),cn=([^,]+),ou=professors,o=tarda.*,c=ES$&quot; 
+&quot;uid=$2,o=tarda,ou=professors,dc=edt,dc=org&quot;
+
+authz-regexp &quot;^email=([^,]+),cn=([^,]+),ou=professors,o=mati.*,c=ES$&quot; 
+&quot;uid=$2,o=mati,ou=professors,dc=edt,dc=org&quot;
+
+authz-regexp &quot;^email=([^,]+),cn=([^,]+),ou=professors,o=caps.*,c=ES$&quot; 
+&quot;uid=$2,o=caps,ou=professors,dc=edt,dc=org&quot;
+
+authz-regexp &quot;^email=([^,]+),cn=([^,]+),ou=professors,o=becaris.*,c=ES$&quot; 
+&quot;uid=$2,o=becaris,ou=professors,dc=edt,dc=org&quot;</code></pre>
+</section><section class="slide level2">
+
+<h3 id="external-client">External Client</h3>
 <p>Un client, un certificat i un connexió.</p>
 <pre><code>SASL_MECH EXTERNAL
 TLS_CERT /path/certificate.pem
@@ -167,8 +188,9 @@ ldapwhoami -ZZ </code></pre>
 <pre><code>User marta
 User pere 
 User anna </code></pre>
-</section><section id="gssapi" class="slide level2">
-<h2>GSSAPI</h2>
+</section><section class="slide level2">
+
+<h3 id="gssapi">GSSAPI</h3>
 <p>El segon metode inclou Keberos i Cyrus Sasl</p>
 <figure>
 <img src="kerberos.jpg" />
@@ -176,8 +198,9 @@ User anna </code></pre>
 <p>Cyrus SASL</p>
 <pre><code>cyrus-sasl-gssapi 
 cyrus-sasl-ldap</code></pre>
-</section><section id="fitxers-de-configuracions-kerberos" class="slide level2">
-<h2>Fitxers de configuracions Kerberos</h2>
+</section><section class="slide level2">
+
+<h3 id="fitxers-de-configuracions-kerberos">Fitxers de configuracions Kerberos</h3>
 <p>krb5.conf</p>
 <pre><code>[logging]
  default = FILE:/var/log/krb5libs.log
@@ -202,8 +225,9 @@ cyrus-sasl-ldap</code></pre>
 [domain_realm]
  .edt.org = EDT.ORG
  edt.org = EDT.ORG</code></pre>
-</section><section id="fitxers-de-configuracions-kerberos-1" class="slide level2">
-<h2>Fitxers de configuracions Kerberos</h2>
+</section><section class="slide level2">
+
+<h3 id="fitxers-de-configuracions-kerberos-1">Fitxers de configuracions Kerberos</h3>
 <p>/var/kerberos/krb5kdc/kdc.conf</p>
 <pre><code>[kdcdefaults]
  kdc_ports = 88
@@ -215,14 +239,15 @@ cyrus-sasl-ldap</code></pre>
   acl_file = /var/kerberos/krb5kdc/kadm5.acl
   dict_file = /usr/share/dict/words
   admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
-  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal camellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal 
+  camellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
  }</code></pre>
 <p>/var/kerberos/krb5kdc/kadm5.acl</p>
 <pre><code>*/admin@EDT.ORG *</code></pre>
 <p>Crear la base de dades de kerberos</p>
 <pre><code>/usr/sbin/kdb5_util create -P masterkey -s</code></pre>
 </section><section id="afegir-els-principals" class="slide level2">
-<h2>Afegir els principals</h2>
+<h1>Afegir els principals</h1>
 <pre><code>admin/admin
 pau/alumnes
 pere/alumnes
@@ -249,7 +274,7 @@ bernat/professors.mati
 carme/professors.caps
 roger/professors.becaris</code></pre>
 </section><section id="afegir-els-principals-ii" class="slide level2">
-<h2>Afegir els principals (II)</h2>
+<h1>Afegir els principals (II)</h1>
 <pre><code>#! /bin/bash
 #Nick Inga Reynaldo
 #Projecte LDAP GSSAPI
@@ -268,21 +293,34 @@ do
 done &lt; usuaris </code></pre>
 <p>Afegir el servei ldap al principals</p>
 <pre><code>/usr/sbin/kadmin.local -q &quot;addprinc -pw randkey ldap/ldapserver.edt.org&quot;</code></pre>
-</section><section id="fitxers-de-configuracions-ldapserver" class="slide level2">
-<h2>Fitxers de configuracions Ldapserver</h2>
+</section><section class="slide level2">
+
+<h3 id="fitxers-de-configuracions-ldapserver">Fitxers de configuracions Ldapserver</h3>
 <p>Global</p>
 <pre><code>sasl-secprops noanonymous,noplain,noactive
 sasl-realm EDT.ORG
 sasl-host ldapserver.edt.org
 
-authz-regexp &quot;^uid=[^,/]+/admin,cn=edt\.org,cn=gssapi,cn=auth&quot; &quot;cn=Manager,dc=edt,dc=org&quot;
-authz-regexp &quot;^uid=[^,/]+/professors.tarda,cn=edt\.org,cn=gssapi,cn=auth&quot; &quot;uid=$1,o=tarda,ou=professors,dc=edt,dc=org&quot;
-authz-regexp &quot;^uid=[^,/]+/professors.mati,cn=edt\.org,cn=gssapi,cn=auth&quot; &quot;uid=$1,o=mati,ou=professors,dc=edt,dc=org&quot;
-authz-regexp &quot;^uid=[^,/]+/professors.caps,cn=edt\.org,cn=gssapi,cn=auth&quot; &quot;uid=$1,o=caps,ou=professors,dc=edt,dc=org&quot;
-authz-regexp &quot;^uid=[^,/]+/professors.becaris,cn=edt\.org,cn=gssapi,cn=auth&quot; &quot;uid=$1,o=becaris,ou=professors,dc=edt,dc=org&quot;
-authz-regexp &quot;^uid=[^,/]+/alumnes,cn=edt\.org,cn=gssapi,cn=auth&quot; &quot;uid=$1,ou=alumnes,dc=edt,dc=org&quot;</code></pre>
-</section><section id="fitxers-de-configuracions-ldapserver-1" class="slide level2">
-<h2>Fitxers de configuracions Ldapserver</h2>
+authz-regexp &quot;^uid=[^,/]+/admin,cn=edt\.org,cn=gssapi,cn=auth&quot; 
+&quot;cn=Manager,dc=edt,dc=org&quot;
+
+authz-regexp &quot;^uid=[^,/]+/professors.tarda,cn=edt\.org,cn=gssapi,cn=auth&quot; 
+&quot;uid=$1,o=tarda,ou=professors,dc=edt,dc=org&quot;
+
+authz-regexp &quot;^uid=[^,/]+/professors.mati,cn=edt\.org,cn=gssapi,cn=auth&quot; 
+&quot;uid=$1,o=mati,ou=professors,dc=edt,dc=org&quot;
+
+authz-regexp &quot;^uid=[^,/]+/professors.caps,cn=edt\.org,cn=gssapi,cn=auth&quot; 
+&quot;uid=$1,o=caps,ou=professors,dc=edt,dc=org&quot;
+
+authz-regexp &quot;^uid=[^,/]+/professors.becaris,cn=edt\.org,cn=gssapi,cn=auth&quot;
+&quot;uid=$1,o=becaris,ou=professors,dc=edt,dc=org&quot;
+
+authz-regexp &quot;^uid=[^,/]+/alumnes,cn=edt\.org,cn=gssapi,cn=auth&quot;
+ &quot;uid=$1,ou=alumnes,dc=edt,dc=org&quot;</code></pre>
+</section><section class="slide level2">
+
+<h3 id="fitxers-de-configuracions-ldapserver-1">Fitxers de configuracions Ldapserver</h3>
 <p>Database</p>
 <pre><code>database bdb
 suffix &quot;dc=edt,dc=org&quot;
@@ -294,11 +332,13 @@ access to *
         by self write
         by * read</code></pre>
 <p>Configuració de kerberos en ldapserver host</p>
-<pre><code>/usr/bin/kadmin -p admin/admin -w kadmin -q &quot;ktadd -k /etc/krb5.keytab ldap/ldapserver.edt.org&quot;
+<pre><code>/usr/bin/kadmin -p admin/admin -w kadmin -q 
+&quot;ktadd -k /etc/krb5.keytab ldap/ldapserver.edt.org&quot;
+
 /usr/bin/chown ldap.ldap /etc/krb5.keytab</code></pre>
 <p>Com ha client de Kerberos també he definit el fitxer krb5.conf</p>
 </section><section id="client-gssapi" class="slide level2">
-<h2>Client GSSAPI</h2>
+<h1>Client GSSAPI</h1>
 <p>Autenticació mitajançant tiquets</p>
 <pre><code>kinit anna/professors.mati
 
@@ -310,7 +350,7 @@ Default principal: anna/professors.mati@EDT.ORG
 Valid starting     Expires            Service principal
 05/17/18 23:01:51  05/18/18 23:01:51  krbtgt/EDT.ORG@EDT.ORG</code></pre>
 </section><section id="ssf" class="slide level2">
-<h2>SSF</h2>
+<h1>SSF</h1>
 <p>Determina el grau de protecció de la base de dades.</p>
 <pre><code>0 cap   1 integritat    1 &gt; cifratge o mecanisme
 
@@ -327,7 +367,7 @@ simple_bind  : Directiva encarregada de fer un traduccion entre els usuaris sasl
 <p>Modificació en slapd.conf</p>
 <pre><code>security update_ssf=256</code></pre>
 </section><section id="client" class="slide level2">
-<h2>Client</h2>
+<h1>Client</h1>
 <p>GSSAPI té un grau de protecció de 256</p>
 <p>Tiquet</p>
 <pre><code>kinit pere/alumnes
@@ -340,7 +380,7 @@ SASL SSF: 256
 SASL data security layer installed.
 modifying entry &quot;uid=pere,ou=alumnes,dc=edt,dc=org&quot;</code></pre>
 </section><section id="conclusions-i-preguntes" class="slide level2">
-<h2>Conclusions i preguntes</h2>
+<h1>Conclusions i preguntes</h1>
 <figure>
 <img src="question.jpg" />
 </figure>

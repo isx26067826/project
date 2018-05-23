@@ -3,7 +3,7 @@
 
 ---
 
-## Openldap
+### Openldap
 
 Es una implementació del protocol LDAP per gestionar base de dades en forma de directoris.
 
@@ -25,7 +25,7 @@ Es una implementació del protocol LDAP per gestionar base de dades en forma de 
 
 ---
 
-## Fitxers de configuració Servidor
+### Fitxers de configuració Servidor
 
 	include		/etc/openldap/schema/corba.schema
 	include		/etc/openldap/schema/core.schema
@@ -58,7 +58,7 @@ Es una implementació del protocol LDAP per gestionar base de dades en forma de 
 
 ---
 
-## Fitxers de configuració Client
+### Fitxers de configuració Client
 
 	#
 	# LDAP Defaults
@@ -101,7 +101,7 @@ Autenticació Simple
 
 ---
 
-## Diferents metodes de protecció
+### Diferents metodes de protecció
 
 - StartTLS
 
@@ -113,7 +113,7 @@ Autenticació Simple
 
 ---
 
-## Es posible encriptar les comunicacions del ldap?
+### Es posible encriptar les comunicacions del ldap?
 
 StartTLS
 
@@ -124,11 +124,13 @@ StartTLS
 
 Creació de certificats
 
-	openssl req -new -x509 -nodes -out /etc/openldap/cacrt.pem -days 365 -keyout /etc/openldap/cakey.pem
+	openssl req -new -x509 -nodes -out cacrt.pem -days 365 -keyout cakey.pem
 	 
-	openssl req -new -newkey rsa:2048 -keyout /etc/openldap/certs/ldapserverkey.pem -nodes -out /etc/openldap/certs/ldapservercsr.pem
+	openssl req -new -newkey rsa:2048 -keyout ldapserverkey.pem -nodes
+	 -out ldapservercsr.pem
 
-	openssl x509 -CA /etc/openldap/certs/cacrt.pem -CAkey /etc/openldap/certs/cakey.pem -req -in /etc/openldap/certs/ldapservercsr.pem -CAcreateserial -out /etc/openldap/certs/ldapservercert.pem
+	openssl x509 -CA cacrt.pem -CAkey cakey.pem -req -in ldapservercsr.pem
+	 -CAcreateserial -out ldapservercert.pem
 
 --- 
 
@@ -162,7 +164,7 @@ ldapwhoami -Z o ldapwhoami -ZZ ?
 
 ---
 	
-## Es posible que les informació per autenticar-se no viatgen per la xarxa?
+### Es posible que l'informació per autenticar-se no viatgen per la xarxa?
 
 
 El primer de aquesta clase de metodes es:
@@ -175,16 +177,15 @@ Amb aquest metode no cal proporcionar ni DN (usuari) ni userPassword (password)
 
 ---
 
-## External Server
+### External Server
 
-
-Creació de certificats
 
 	openssl req -new -newkey rsa:2048 -keyout martakey.pem -nodes -out martacsr.pem
 	
-	openssl x509 -CA /etc/openldap/certs/cacrt.pem  -CAkey /etc/openldap/certs/cakey.pem  -req -in martacsr.pem  -CAcreateserial -out martacert.pem
+	openssl x509 -CA /etc/openldap/certs/cacrt.pem  -CAkey /etc/openldap/certs/cakey.pem  -req -in martacsr.pem 
+	 -CAcreateserial -out martacert.pem
 
-Server
+	Server
 
 	#SSL certificate file paths
 	TLSCACertificateFile /etc/openldap/certs/ca.cert
@@ -193,18 +194,27 @@ Server
 	TLSCipherSuite HIGH:MEDIUM:+SSLv2
 	TLSVerifyClient demand
 
-	authz-regexp "^email=([^,]+),cn=([^,]+),ou=alumnes.*,c=ES$" "uid=$2,ou=alumnes,dc=edt,dc=org"
+	authz-regexp "^email=([^,]+),cn=([^,]+),ou=alumnes.*,c=ES$" 
+	"uid=$2,ou=alumnes,dc=edt,dc=org"
+	
 	authz-regexp "^email=([^,]+),cn=manager.*,c=ES$" "cn=Manager,dc=edt,dc=org"
-	authz-regexp "^email=([^,]+),cn=([^,]+),ou=professors,o=tarda.*,c=ES$" "uid=$2,o=tarda,ou=professors,dc=edt,dc=org"
-	authz-regexp "^email=([^,]+),cn=([^,]+),ou=professors,o=mati.*,c=ES$" "uid=$2,o=mati,ou=professors,dc=edt,dc=org"
-	authz-regexp "^email=([^,]+),cn=([^,]+),ou=professors,o=caps.*,c=ES$" "uid=$2,o=caps,ou=professors,dc=edt,dc=org"
-	authz-regexp "^email=([^,]+),cn=([^,]+),ou=professors,o=becaris.*,c=ES$" "uid=$2,o=becaris,ou=professors,dc=edt,dc=org"
+	authz-regexp "^email=([^,]+),cn=([^,]+),ou=professors,o=tarda.*,c=ES$" 
+	"uid=$2,o=tarda,ou=professors,dc=edt,dc=org"
+	
+	authz-regexp "^email=([^,]+),cn=([^,]+),ou=professors,o=mati.*,c=ES$" 
+	"uid=$2,o=mati,ou=professors,dc=edt,dc=org"
+	
+	authz-regexp "^email=([^,]+),cn=([^,]+),ou=professors,o=caps.*,c=ES$" 
+	"uid=$2,o=caps,ou=professors,dc=edt,dc=org"
+	
+	authz-regexp "^email=([^,]+),cn=([^,]+),ou=professors,o=becaris.*,c=ES$" 
+	"uid=$2,o=becaris,ou=professors,dc=edt,dc=org"
 
 
 
 ---
 
-## External Client
+### External Client
 
 Un client, un certificat i un connexió.
 	
@@ -223,7 +233,7 @@ Casos
 	
 ---
 
-## GSSAPI
+### GSSAPI
 
 El segon metode inclou Keberos i Cyrus Sasl
 
@@ -236,7 +246,7 @@ Cyrus SASL
 
 ---
 
-## Fitxers de configuracions Kerberos
+### Fitxers de configuracions Kerberos
 
 krb5.conf
 	
@@ -267,7 +277,7 @@ krb5.conf
 
 ---
 
-## Fitxers de configuracions Kerberos 
+### Fitxers de configuracions Kerberos 
 
 /var/kerberos/krb5kdc/kdc.conf
 
@@ -281,7 +291,8 @@ krb5.conf
 	  acl_file = /var/kerberos/krb5kdc/kadm5.acl
 	  dict_file = /usr/share/dict/words
 	  admin_keytab = /var/kerberos/krb5kdc/kadm5.keytab
-	  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal camellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
+	  supported_enctypes = aes256-cts:normal aes128-cts:normal des3-hmac-sha1:normal arcfour-hmac:normal camellia256-cts:normal 
+	  camellia128-cts:normal des-hmac-sha1:normal des-cbc-md5:normal des-cbc-crc:normal
 	 }
 
 /var/kerberos/krb5kdc/kadm5.acl
@@ -349,7 +360,7 @@ Afegir el servei ldap al principals
 
 ---
 
-## Fitxers de configuracions Ldapserver
+### Fitxers de configuracions Ldapserver
 
 Global
 
@@ -357,16 +368,27 @@ Global
 	sasl-realm EDT.ORG
 	sasl-host ldapserver.edt.org
 
-	authz-regexp "^uid=[^,/]+/admin,cn=edt\.org,cn=gssapi,cn=auth" "cn=Manager,dc=edt,dc=org"
-	authz-regexp "^uid=[^,/]+/professors.tarda,cn=edt\.org,cn=gssapi,cn=auth" "uid=$1,o=tarda,ou=professors,dc=edt,dc=org"
-	authz-regexp "^uid=[^,/]+/professors.mati,cn=edt\.org,cn=gssapi,cn=auth" "uid=$1,o=mati,ou=professors,dc=edt,dc=org"
-	authz-regexp "^uid=[^,/]+/professors.caps,cn=edt\.org,cn=gssapi,cn=auth" "uid=$1,o=caps,ou=professors,dc=edt,dc=org"
-	authz-regexp "^uid=[^,/]+/professors.becaris,cn=edt\.org,cn=gssapi,cn=auth" "uid=$1,o=becaris,ou=professors,dc=edt,dc=org"
-	authz-regexp "^uid=[^,/]+/alumnes,cn=edt\.org,cn=gssapi,cn=auth" "uid=$1,ou=alumnes,dc=edt,dc=org"
+	authz-regexp "^uid=[^,/]+/admin,cn=edt\.org,cn=gssapi,cn=auth" 
+	"cn=Manager,dc=edt,dc=org"
+	
+	authz-regexp "^uid=[^,/]+/professors.tarda,cn=edt\.org,cn=gssapi,cn=auth" 
+	"uid=$1,o=tarda,ou=professors,dc=edt,dc=org"
+	
+	authz-regexp "^uid=[^,/]+/professors.mati,cn=edt\.org,cn=gssapi,cn=auth" 
+	"uid=$1,o=mati,ou=professors,dc=edt,dc=org"
+	
+	authz-regexp "^uid=[^,/]+/professors.caps,cn=edt\.org,cn=gssapi,cn=auth" 
+	"uid=$1,o=caps,ou=professors,dc=edt,dc=org"
+	
+	authz-regexp "^uid=[^,/]+/professors.becaris,cn=edt\.org,cn=gssapi,cn=auth"
+	"uid=$1,o=becaris,ou=professors,dc=edt,dc=org"
+	
+	authz-regexp "^uid=[^,/]+/alumnes,cn=edt\.org,cn=gssapi,cn=auth"
+	 "uid=$1,ou=alumnes,dc=edt,dc=org"
 
 ---
 
-## Fitxers de configuracions Ldapserver
+### Fitxers de configuracions Ldapserver
 
 Database
 
@@ -382,7 +404,9 @@ Database
 
 Configuració de kerberos en ldapserver host
 
-	/usr/bin/kadmin -p admin/admin -w kadmin -q "ktadd -k /etc/krb5.keytab ldap/ldapserver.edt.org"
+	/usr/bin/kadmin -p admin/admin -w kadmin -q 
+	"ktadd -k /etc/krb5.keytab ldap/ldapserver.edt.org"
+	
 	/usr/bin/chown ldap.ldap /etc/krb5.keytab
 
 Com ha client de Kerberos també he definit el fitxer krb5.conf 
